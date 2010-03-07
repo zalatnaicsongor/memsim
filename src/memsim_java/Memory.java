@@ -64,8 +64,7 @@ public class Memory {
         if (!vanHely) {
             szabadmeret = (this.size) - kezdocim;
             if (szabadmeret < meret) {
-                throw new MemorySpaceException("kompaktálni kéne");
-                //Ide jön majd a kompaktálás hívása, és akkor majd lesz elég hely az utolsó allokált hely után!
+                throw new MemorySpaceException("Valami nagy baj van!");
             }
         }
 
