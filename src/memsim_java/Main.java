@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package memsim_java;
 
 /**
@@ -10,7 +9,6 @@ package memsim_java;
  * @author zalatnaicsongor
  */
 public class Main {
-
 
     /**
      * @param args the command line arguments
@@ -42,5 +40,4 @@ public class Main {
             System.out.println(e);
         }
     }
-
 }

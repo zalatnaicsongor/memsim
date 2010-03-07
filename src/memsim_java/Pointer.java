@@ -1,9 +1,10 @@
 package memsim_java;
 
-public class Pointer implements Comparable{
-	private int size; // SZAVAK SZÁMA
-	private int address; // KEZDŐCÍM
-	private Memory memObj;
+public class Pointer implements Comparable {
+
+    private int size; // SZAVAK SZÁMA
+    private int address; // KEZDŐCÍM
+    private Memory memObj;
 
     public int compareTo(Object o) {
         Pointer p1 = (Pointer) o;
@@ -16,16 +17,16 @@ public class Pointer implements Comparable{
         return retval;
     }
 
-	public int read(int offset) throws PointerOutOfRangeException {
+    public int read(int offset) throws PointerOutOfRangeException {
         if (offset + 1 > size) {
             throw new PointerOutOfRangeException("Nincs ennyi memória foglalva");
         }
         int msb = readByte(offset * 2);
         int lsb = readByte((offset * 2) + 1);
         return (msb << 8) | lsb;
-	}
+    }
 
-	public void write(int offset, int data) throws PointerOutOfRangeException {
+    public void write(int offset, int data) throws PointerOutOfRangeException {
         if (offset + 1 > size) {
             throw new PointerOutOfRangeException("Nincs ennyi memória foglalva");
         }
@@ -33,17 +34,17 @@ public class Pointer implements Comparable{
         int msb = (data & 0xFF00) >>> 8;
         writeByte(offset * 2, msb);
         writeByte((offset * 2) + 1, lsb);
-	}
+    }
 
-	private int readByte(int offset) {
-		return memObj.readByte(this.address + offset);
-	}
+    private int readByte(int offset) {
+        return memObj.readByte(this.address + offset);
+    }
 
-	private void writeByte(int offset, int data) {
-		memObj.writeByte(address + offset, data);
-	}
+    private void writeByte(int offset, int data) {
+        memObj.writeByte(address + offset, data);
+    }
 
-	public Pointer(int size, int startAddress) {
+    public Pointer(int size, int startAddress) {
         this.size = size;
         this.address = startAddress;
         this.memObj = Memory.getInstance();
@@ -52,7 +53,7 @@ public class Pointer implements Comparable{
         System.out.println("Méret:" + this.getSizeInBytes() + " byte");
         System.out.println("Kezdőcím: " + address);
         System.out.println("Végcím: " + (address + this.getSizeInBytes() - 1));
-	}
+    }
 
     public Pointer free() {
         this.memObj.pointers.remove(this);
@@ -73,19 +74,19 @@ public class Pointer implements Comparable{
         this.setAddress(toAbsoluteAddress);
     }
 
-	public int getSize() {
-		return this.size;
-	}
+    public int getSize() {
+        return this.size;
+    }
 
     public int getSizeInBytes() {
         return (this.size * 2);
     }
 
-	public void setAddress(int address) {
-		this.address = address;
-	}
+    public void setAddress(int address) {
+        this.address = address;
+    }
 
-	public int getAddress() {
-		return this.address;
-	}
+    public int getAddress() {
+        return this.address;
+    }
 }
