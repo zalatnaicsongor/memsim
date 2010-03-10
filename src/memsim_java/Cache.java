@@ -1,0 +1,138 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+//TODO: READBYTE-WRITEBYTE MEGVALÓSÍTÁSA + ALGORITMUSOK
+
+package memsim_java;
+import java.util.*;
+/**
+ *
+ * @author zalatnaicsongor
+ */
+public class Cache {
+    private int rowSize;
+    private int numRows;
+    private int associativity;
+    private static Cache instance;
+
+    private int lineLength;
+    private int tagLength;
+    private int displacementLength;
+
+    private CacheWriteStrategy writeStrategy;
+    private CacheRowDiscardStrategy rowDiscardStrategy;
+
+    private ArrayList<CacheLine> lines;
+
+    public CacheLine getLine(int line) {
+        return lines.get(line);
+    }
+
+    public CacheRowDiscardStrategy getRowDiscardStrategy() {
+        return rowDiscardStrategy;
+    }
+
+    public void setRowDiscardStrategy(CacheRowDiscardStrategy rowDiscardStrategy) {
+        this.rowDiscardStrategy = rowDiscardStrategy;
+    }
+
+    public CacheWriteStrategy getWriteStrategy() {
+        return writeStrategy;
+    }
+
+    public void setWriteStrategy(CacheWriteStrategy writeStrategy) {
+        this.writeStrategy = writeStrategy;
+    }
+
+    public int getAssociativity() {
+        return associativity;
+    }
+
+    public int getNumRows() {
+        return numRows;
+    }
+
+    public int getRowSize() {
+        return rowSize;
+    }
+
+    public int getSize() {
+        return numRows * rowSize * associativity;
+    }
+
+    public int genLine(int address) {
+        int remainLength = Memory.ADDRESSLENGTH - this.tagLength - this.lineLength;
+        int mask = (int)(Math.pow(2, this.lineLength) - 1) << remainLength;
+        return ((mask & address) >>> remainLength);
+    }
+
+    public int genTag(int address) {
+        int remainLength = Memory.ADDRESSLENGTH - this.tagLength;
+        int mask = (int)(Math.pow(2, this.tagLength) - 1) << remainLength;
+        return ((mask & address) >>> remainLength);
+    }
+
+    public int genDisplacement(int address) {
+        int mask = (int)(Math.pow(2, this.displacementLength) - 1);
+        return (mask & address);
+    }
+
+    public int genAddress(int tag, int line, int displacement) {
+        int retval = 0;
+        retval = retval | displacement;
+        retval |= line << this.displacementLength;
+        retval |= tag << (this.displacementLength + this.lineLength);
+        return retval;
+    }
+
+    public static int logKetto(int a) {
+        int r = 0;
+        while (true) {
+            a = a >>> 1;
+            if (a<=0) {
+                break;
+            }
+            r++;
+        }
+        return r;
+    }
+
+    protected Cache(int rowSize, int numRows, int associativity) throws Exception {
+        if ((rowSize & (rowSize - 1)) != 0 || rowSize <= 0) {
+            throw new Exception("rowSize nem kettohatvany, vagy 0, vagy negativ");
+        }
+        if ((numRows & (numRows - 1)) != 0 || numRows <= 0) {
+            throw new Exception("numRows nem kettohatvany, vagy 0, vagy negativ");
+        }
+        if ((associativity & (associativity - 1)) != 0 || associativity <= 0) {
+            throw new Exception("associativity nem kettohatvany, vagy 0, vagy negativ");
+        }
+        this.rowSize = rowSize;
+        this.numRows = numRows;
+        this.associativity = associativity;
+        this.lineLength = Cache.logKetto(numRows);
+        this.displacementLength = Cache.logKetto(rowSize);
+        this.tagLength = Memory.ADDRESSLENGTH - this.lineLength - this.displacementLength;
+        if (this.tagLength <= 0) {
+            throw new Exception("itt valami rossz történt");
+        }
+        this.lines = new ArrayList<CacheLine>(numRows);
+        for (int i = 0; i < numRows; i++) {
+            this.lines.add(i, new CacheLine(i, associativity));
+        }
+    }
+
+    public static void create(int rowSize, int numRows, int associativity) throws Exception {
+        try {
+            Cache.instance = new Cache(rowSize, numRows, associativity);
+        } catch (Exception e) {
+            throw new Exception(e);
+        }
+    }
+    public static Cache getInstance() {
+        return Cache.instance;
+    }
+
+}

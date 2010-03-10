@@ -14,7 +14,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Memory.createMemory(20);
+        Memory.createMemory(65536);
         Pointer ptr1 = null;
         Pointer ptr2 = null;
         Pointer ptr3 = null;
@@ -37,6 +37,16 @@ public class Main {
             ptr1.write(1, 65342);
             System.out.println(ptr1.read(0));
         } catch (PointerOutOfRangeException e) {
+            System.out.println(e);
+        }
+        try {
+            Cache.create(32, 8, 1);
+            System.out.println(Cache.getInstance().genTag(0xA45C));
+            Cache.getInstance().getLine(Cache.getInstance().genLine(0xA45C)).createRow(Cache.getInstance().genTag(0xA45c));
+            System.out.println(Cache.getInstance().genLine(0xA45C));
+            System.out.println(Cache.getInstance().genDisplacement(0xA45C));
+            System.out.println(Cache.getInstance().genAddress(164, 2, 28));
+        } catch (Exception e) {
             System.out.println(e);
         }
     }

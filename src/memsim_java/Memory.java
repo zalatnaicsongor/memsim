@@ -4,6 +4,8 @@ import java.util.*;
 
 public class Memory {
 
+    public static final int ADDRESSLENGTH = 16;
+
     private int size;
     private int maxContFreeSpace;
     private int freeSpace;
