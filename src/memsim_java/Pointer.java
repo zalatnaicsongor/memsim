@@ -37,11 +37,11 @@ public class Pointer implements Comparable {
     }
 
     private int readByte(int offset) {
-        return memObj.readByte(this.address + offset);
+        return Cache.getInstance().readByte(this.address + offset);
     }
 
     private void writeByte(int offset, int data) {
-        memObj.writeByte(address + offset, data);
+        Cache.getInstance().writeByte(address + offset, data);
     }
 
     public Pointer(int size, int startAddress) {

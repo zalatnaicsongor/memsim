@@ -87,6 +87,25 @@ public class Cache {
         return retval;
     }
 
+    public int readByte(int address) {
+        int line = Cache.getInstance().genLine(address);
+        int tag = Cache.getInstance().genTag(address);
+        int displacement = Cache.getInstance().genDisplacement(address);
+
+        CacheRow row = null;
+
+        try {
+            row = Cache.getInstance().getLine(line).getRowByTag(tag);
+        } catch (CacheRowNotFoundException e) {
+            System.out.println(e);
+            row = Cache.getInstance().getLine(line).createRow(tag);
+        }
+        return row.readByte(displacement);
+    }
+    public void writeByte(int address, int data) {
+        this.getWriteStrategy().writeByte(address, data);
+    }
+
     public static int logKetto(int a) {
         int r = 0;
         while (true) {
