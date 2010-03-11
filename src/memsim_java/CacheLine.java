@@ -9,6 +9,7 @@ package memsim_java;
  * @author zalatnaicsongor
  */
 public class CacheLine {
+    private int sequence = 0;
     private int line;
     CacheRow[] cacheRowArray;
 
@@ -16,6 +17,20 @@ public class CacheLine {
         return line;
     }
 
+    public void destroyAll() {
+        for (CacheRow cr: cacheRowArray) {
+            cr.discard();
+        }
+    }
+
+    public void resetSequence() {
+        this.sequence = 0;
+    }
+    public int getNextSequence() {
+        int retval = this.sequence;
+        this.sequence++;
+        return retval;
+    }
     public CacheLine(int line, int associativity) {
         this.line = line;
         this.cacheRowArray = new CacheRow[associativity];

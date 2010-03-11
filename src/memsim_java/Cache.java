@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 
-//TODO: READBYTE-WRITEBYTE MEGVALÓSÍTÁSA + ALGORITMUSOK
+//TODO: ARRAYLIST KIIRTASA (csak pointernel maradhat) +KOMPAKTÁLÁSKOR CACHE INVALIDÁLÁSA + ALGORITMUSOK
 
 package memsim_java;
 import java.util.*;
@@ -24,10 +24,28 @@ public class Cache {
     private CacheWriteStrategy writeStrategy;
     private CacheRowDiscardStrategy rowDiscardStrategy;
 
-    private ArrayList<CacheLine> lines;
+    private CacheLine[] lines;
+
+    public void destroyAll() {
+        for (CacheLine cr: lines) {
+            cr.destroyAll();
+        }
+    }
+
+    public void destroyByAddress(int address) {
+        int line = this.genLine(address);
+        int tag = this.genTag(address);
+        try {
+            CacheLine cLine = this.getLine(line);
+            CacheRow cRow = cLine.getRowByTag(tag);
+            cRow.discard();
+        } catch (CacheRowNotFoundException e) {
+            System.out.println("Nem is volt bent a cache-ben, nem kell kidobni");
+        }
+    }
 
     public CacheLine getLine(int line) {
-        return lines.get(line);
+        return lines[line];
     }
 
     public CacheRowDiscardStrategy getRowDiscardStrategy() {
@@ -137,9 +155,9 @@ public class Cache {
         if (this.tagLength <= 0) {
             throw new Exception("itt valami rossz történt");
         }
-        this.lines = new ArrayList<CacheLine>(numRows);
+        this.lines = new CacheLine[numRows];
         for (int i = 0; i < numRows; i++) {
-            this.lines.add(i, new CacheLine(i, associativity));
+            this.lines[i] = new CacheLine(i, associativity);
         }
     }
 

@@ -56,6 +56,7 @@ public class Pointer implements Comparable {
     }
 
     public Pointer free() {
+        this.clearCache();
         this.memObj.pointers.remove(this);
         this.memObj.setFreeSpace(this.memObj.getFreeSpace() + this.getSizeInBytes());
         System.out.println("-----");
@@ -67,7 +68,14 @@ public class Pointer implements Comparable {
         return null;
     }
 
+    private void clearCache() {
+        for (int i = 0; i < this.getSizeInBytes(); i++) {
+            Cache.getInstance().destroyByAddress(this.getAddress() + i);
+        }
+    }
+
     public void move(int toAbsoluteAddress) {
+        this.clearCache();
         for (int i = 0; i < this.getSizeInBytes(); i++) {
             this.memObj.writeByte(toAbsoluteAddress + i, this.memObj.readByte(this.getAddress() + i));
         }

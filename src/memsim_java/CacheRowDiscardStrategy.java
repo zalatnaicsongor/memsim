@@ -4,7 +4,6 @@
  */
 
 package memsim_java;
-import java.util.*;
 /**
  *
  * @author zalatnaicsongor
