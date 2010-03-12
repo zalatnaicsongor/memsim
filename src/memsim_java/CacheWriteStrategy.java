@@ -12,10 +12,4 @@ package memsim_java;
 public interface CacheWriteStrategy {
     public void writeByte(int address, int data);
     public void onDiscard(CacheRow cr);
-    /**
-     * A Singleton tervezési minta megvalósításához
-     * Tudjuk, hogy egy stratégiából csak egy lehet
-     * @return
-     */
-    public CacheWriteStrategy getInstance();
 }

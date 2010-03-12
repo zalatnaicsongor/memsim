@@ -14,7 +14,7 @@ public interface CacheRowDiscardStrategy {
      * @param cacheRows
      * @return
      */
-    public CacheRow findRow(CacheRow[] cacheRows);
+    public CacheRow findRow(CacheLine cLine);
     /**
      * A Singleton tervezési minta megvalósításához
      * Tudjuk, hogy egy stratégiából csak egy lehet

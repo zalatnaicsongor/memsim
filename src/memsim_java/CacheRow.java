@@ -4,7 +4,6 @@
  */
 
 package memsim_java;
-import java.util.*;
 /**
  *
  * @author zalatnaicsongor
@@ -20,12 +19,24 @@ public class CacheRow {
     private int[] data;
 
     public int readByte(int displacement) {
+        updateUsageData();
         return data[displacement];
     }
 
     public void writeByte(int displacement, int data) {
         this.setDirty(true);
+        updateUsageData();
         this.data[displacement] = data;
+    }
+
+    private void updateUsageData() {
+        this.useSequence = container.getNextSequence();
+        this.useCount++;
+    }
+
+    public void resetUsageData() {
+        this.useCount = 0;
+        this.useSequence = 0;
     }
 
     public int getTag() {

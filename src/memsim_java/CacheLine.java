@@ -9,6 +9,7 @@ package memsim_java;
  * @author zalatnaicsongor
  */
 public class CacheLine {
+
     private int sequence = 0;
     private int line;
     CacheRow[] cacheRowArray;
@@ -26,11 +27,19 @@ public class CacheLine {
     public void resetSequence() {
         this.sequence = 0;
     }
+
+    public void resetUsageData() {
+        for (CacheRow cr: cacheRowArray) {
+            cr.resetUsageData();
+        }
+    }
+
     public int getNextSequence() {
         int retval = this.sequence;
         this.sequence++;
         return retval;
     }
+
     public CacheLine(int line, int associativity) {
         this.line = line;
         this.cacheRowArray = new CacheRow[associativity];
@@ -58,12 +67,14 @@ public class CacheLine {
     public CacheRow createRow(int tag) {
         CacheRow retval = null;
         while (this.getFreeRowsCount() <= 0) {
-            Cache.getInstance().getRowDiscardStrategy().findRow(cacheRowArray).discard();
+            Cache.getInstance().getRowDiscardStrategy().findRow(this).discard();
+            resetUsageData();
         }
         retval = new CacheRow(tag, this);
         this.cacheRowArray[this.findFreeIndex()] = retval;
         return retval;
     }
+
     public int findFreeIndex() {
         int index = -1;
         for (int i = 0; i < Cache.getInstance().getAssociativity(); i++) {
@@ -79,6 +90,46 @@ public class CacheLine {
         for (CacheRow cr: this.cacheRowArray) {
             if (cr == null || !cr.isValid()) {
                 retval++;
+            }
+        }
+        return retval;
+    }
+
+    public CacheRow getMinUsageCountCacheRow() {
+        CacheRow retval = this.cacheRowArray[0];
+        for (CacheRow cr: this.cacheRowArray) {
+            if (cr.getUseCount() < retval.getUseCount()) {
+                retval = cr;
+            }
+        }
+        return retval;
+    }
+
+    public CacheRow getMaxUsageCountCacheRow() {
+        CacheRow retval = this.cacheRowArray[0];
+        for (CacheRow cr: this.cacheRowArray) {
+            if (cr.getUseCount() > retval.getUseCount()) {
+                retval = cr;
+            }
+        }
+        return retval;
+    }
+
+    public CacheRow getMinUsageSequenceCacheRow() {
+        CacheRow retval = this.cacheRowArray[0];
+        for (CacheRow cr: this.cacheRowArray) {
+            if (cr.getUseSequence() < retval.getUseSequence()) {
+                retval = cr;
+            }
+        }
+        return retval;
+    }
+
+    public CacheRow getMinUsageSequenceCacheRow() {
+        CacheRow retval = this.cacheRowArray[0];
+        for (CacheRow cr: this.cacheRowArray) {
+            if (cr.getUseSequence() > retval.getUseSequence()) {
+                retval = cr;
             }
         }
         return retval;

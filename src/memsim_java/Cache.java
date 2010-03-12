@@ -6,7 +6,7 @@
 //TODO: ARRAYLIST KIIRTASA (csak pointernel maradhat) +KOMPAKTÁLÁSKOR CACHE INVALIDÁLÁSA + ALGORITMUSOK
 
 package memsim_java;
-import java.util.*;
+import cache.algorithm.*;
 /**
  *
  * @author zalatnaicsongor
@@ -25,6 +25,11 @@ public class Cache {
     private CacheRowDiscardStrategy rowDiscardStrategy;
 
     private CacheLine[] lines;
+
+    public CacheRow getMinUsageCountCacheRow() {
+        CacheRow retval = null;
+    }
+
 
     public void destroyAll() {
         for (CacheLine cr: lines) {
