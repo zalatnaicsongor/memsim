@@ -98,7 +98,8 @@ public class CacheRow {
         for (int i = 0; i < Cache.getInstance().getRowSize(); i++) {
             this.data[i] = Memory.getInstance().readByte(startAddress + i);
         }
-
+        System.out.println("Behoztam egy sort, tag: " + tag + " line: " + container.getLine());
+        System.out.println("----------");
     }
 
 }

@@ -21,7 +21,7 @@ public class Cache {
     private int tagLength;
     private int displacementLength;
 
-    private CacheWriteStrategy writeStrategy;
+    private CacheWriteStrategy writeStrategy = CacheWriteAllocator.getInstance();
     private CacheRowDiscardStrategy rowDiscardStrategy;
 
     private CacheLine[] lines;

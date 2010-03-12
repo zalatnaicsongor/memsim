@@ -51,9 +51,11 @@ public class CacheLine {
     public CacheRow getRowByTag(int tag) throws CacheRowNotFoundException {
         CacheRow retval = null;
         for (CacheRow cr: this.cacheRowArray) {
-            if (cr.getTag() == tag) {
-                retval = cr;
-                break;
+            if (cr != null) {
+                if (cr.getTag() == tag) {
+                    retval = cr;
+                    break;
+                }
             }
         }
         if (retval == null) {
