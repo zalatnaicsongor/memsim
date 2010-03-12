@@ -26,10 +26,6 @@ public class Cache {
 
     private CacheLine[] lines;
 
-    public CacheRow getMinUsageCountCacheRow() {
-        CacheRow retval = null;
-    }
-
 
     public void destroyAll() {
         for (CacheLine cr: lines) {

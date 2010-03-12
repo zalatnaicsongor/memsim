@@ -125,7 +125,7 @@ public class CacheLine {
         return retval;
     }
 
-    public CacheRow getMinUsageSequenceCacheRow() {
+    public CacheRow getMaxUsageSequenceCacheRow() {
         CacheRow retval = this.cacheRowArray[0];
         for (CacheRow cr: this.cacheRowArray) {
             if (cr.getUseSequence() > retval.getUseSequence()) {
