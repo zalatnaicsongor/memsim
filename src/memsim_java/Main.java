@@ -3,7 +3,7 @@
  * and open the template in the editor.
  */
 package memsim_java;
-
+import cache.algorithm.*;
 /**
  *
  * @author zalatnaicsongor
@@ -22,6 +22,7 @@ public class Main {
             System.out.println(e);
         }
         Cache cache = Cache.getInstance();
+        cache.setRowDiscardStrategy(CacheRowDiscardLRU.getInstance());
         Pointer ptr1 = null;
         Pointer ptr2 = null;
         Pointer ptr3 = null;
@@ -46,7 +47,7 @@ public class Main {
             ptr5.write(610, 65342);
             ptr5.write(6010, 65342);
             ptr5.write(8057, 65342);
-            System.out.println(ptr1.read(0));
+            ptr5.write(4996, 65342);
             ptr1 = ptr1.free();
         } catch (PointerOutOfRangeException e) {
             System.out.println(e);

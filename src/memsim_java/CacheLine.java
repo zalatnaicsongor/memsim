@@ -71,6 +71,7 @@ public class CacheLine {
         while (this.getFreeRowsCount() <= 0) {
             Cache.getInstance().getRowDiscardStrategy().findRow(this).discard();
             resetUsageData();
+            resetSequence();
         }
         retval = new CacheRow(tag, this);
         this.cacheRowArray[this.findFreeIndex()] = retval;
