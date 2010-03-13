@@ -22,7 +22,7 @@ public class Cache {
     private int displacementLength;
 
     private CacheWriteStrategy writeStrategy = CacheWriteAllocator.getInstance();
-    private CacheRowDiscardStrategy rowDiscardStrategy;
+    private CacheRowDiscardStrategy rowDiscardStrategy = CacheRowDiscardFirst.getInstance();
 
     private CacheLine[] lines;
 

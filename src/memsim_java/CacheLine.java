@@ -12,7 +12,7 @@ public class CacheLine {
 
     private int sequence = 0;
     private int line;
-    CacheRow[] cacheRowArray;
+    public CacheRow[] cacheRowArray;
 
     public int getLine() {
         return line;
@@ -79,10 +79,13 @@ public class CacheLine {
 
     public int findFreeIndex() {
         int index = -1;
-        for (int i = 0; i < Cache.getInstance().getAssociativity(); i++) {
-            if (this.cacheRowArray[i] == null || this.cacheRowArray[i].isValid()) {
+        int i = 0;
+        for (CacheRow cr: this.cacheRowArray) {
+            if (cr == null || !cr.isValid()) {
+                System.out.println(i);
                 return i;
             }
+            i++;
         }
         return index;
     }

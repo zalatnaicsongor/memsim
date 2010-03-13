@@ -17,10 +17,11 @@ public class Main {
         Memory.createMemory(65536);
         Memory memoria = Memory.getInstance();
         try {
-            Cache.create(32, 8, 1);
+            Cache.create(32, 32, 2);
         } catch (Exception e) {
             System.out.println(e);
         }
+        Cache cache = Cache.getInstance();
         Pointer ptr1 = null;
         Pointer ptr2 = null;
         Pointer ptr3 = null;
@@ -41,14 +42,11 @@ public class Main {
             System.out.println(e);
         }
         try {
-            ptr1.write(0, 65342);
-            ptr1.write(1, 65342);
-            ptr2.write(0, 65342);
             ptr5.write(601, 65342);
+            ptr5.write(610, 65342);
             ptr5.write(6010, 65342);
-            ptr5.write(21675, 65342);
+            ptr5.write(8057, 65342);
             System.out.println(ptr1.read(0));
-            Cache cache = Cache.getInstance();
             ptr1 = ptr1.free();
         } catch (PointerOutOfRangeException e) {
             System.out.println(e);
