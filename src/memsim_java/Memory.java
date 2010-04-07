@@ -41,18 +41,6 @@ public class Memory {
     private int maxContFreeSpace;
     private int freeSpace;
 
-
-    private ArrayList<Integer> data;
-    /* FIXME
-     * Gondolom a fenti data helyett jönnek be a lapkeretek, amelyek
-     * az adatot tartalmazzák. Emiatt módosítni kell az osztályon...
-     *
-     *     |
-     *     |
-     *     |
-     *     V
-     */
-
     /**
      * A lapkeretek láncolt listája.
      */
@@ -66,6 +54,30 @@ public class Memory {
 
     private static Memory instance;
     public ArrayList<Pointer> pointers = new ArrayList<Pointer>();
+
+    public PageReplacer pageReplacer;
+
+	/**
+	 * Végignézi a fizikai memóriában lévő lapokat.
+	 * Ha benne van az, aminek megfelelő a lapcíme, akkor visszaadja.
+	 * Ha nincs, akkor PageFault-ot dob.
+	 * 
+	 * @author zealot
+	 */
+	public Page getPageFromPhysicalMemory(int pageNumber) throws PageFault {
+		Iterator<Page> it = pageFrames.iterator();
+        Page ret = null;
+		while (it.hasNext()) {
+			Page p = it.next();
+			if (p.getPageNumber() == pageNumber) {
+				ret = p;
+			}
+		}
+        if (ret == null) {
+    	    throw new PageFault("A lap nincs a fizikai memóriában!");
+        }
+        return ret;
+	}
 
     public void compact() {
         int kezdocim = 0;
@@ -82,11 +94,34 @@ public class Memory {
     }
 
     public int readByte(int address) {
-        return data.get(address);
+        int pageNumber = address >>> PHYADDRESSLENGTH; //felső bites lapcím
+		int mask = (~0) >>> (ADDRESSLENGTH - PHYADDRESSLENGTH);
+		int physicalAddress = address & mask; //fizikai cím
+		Page hereItIs = null;
+		try {
+            //ha bennvan, akkor béke, ha nem, akkor hibát dob
+			hereItIs = getPageFromPhysicalMemory(pageNumber);
+		} catch (PageFault pf) {
+            if (pageFrames.size() == NUMBEROFPAGEFRAMES) {
+			    Page out = pageReplacer.whichToThrowOut(pageFrames);
+                //ha megvan, akkor valahogy kidobni
+                //lehet hogy ez is alg.függő, és akkor nem itt kellene hogy legyen
+            }
+            //Ha már van hely, akkor jöhet az új lap
+		}
+        //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most használtuk
+        // lista elejre vagy mittomén
+        pageReplacer.doTheAccounting(hereItIs, pageFrames);
+		return hereItIs.readByte(physicalAddress);
+	
     }
 
     public void writeByte(int address, int data) {
-        this.data.add(address, data);
+        //this.data.add(address, data);
+        //ITT HIBA VAN
+        //de most itt hagyom, mert nemtom, hogy ha írni akarok és nincs bent
+        //akkor is be kell e hozni, vagy hogy
+        // de ha igen, akkor u.a., mint a read...
     }
 
     public Pointer allocPointer(int wordCount) throws MemorySpaceException {
@@ -148,10 +183,6 @@ public class Memory {
     protected Memory(int size) {
         this.size = size;
         this.maxContFreeSpace = size;
-        this.data = new ArrayList<Integer>();
-        for (int i = 0; i < size; i++) {
-            data.add(0); // inicializáljuk a memóriát!
-        }
         this.freeSpace = size;
     }
 

@@ -50,6 +50,11 @@ public class Page {
         data = new int[Memory.PAGESIZE];            // ?
     }
 
+    //byte olvasása a lapról
+    public int readByte(int physicalAddress) {
+        return data[physicalAddress];
+        //itt egy HASZNÁLTAM++ kellene, de a ref az nem az (akkor mi is??)
+    }
 
     // Getterek
 
