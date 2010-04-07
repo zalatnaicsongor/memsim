@@ -42,7 +42,7 @@ public class Page {
     public boolean isInMemory;
 
     /**
-     * A lap sorszáma.
+     * A lap sorszáma, azonosítója.
      */
     public int pageNumber;
 
@@ -51,6 +51,61 @@ public class Page {
      * A lapon lévő adat.
      */
     public int[] data;
+
+
+    /**
+     * Konstruktor
+     * @param number A lapsorszám.
+     */
+    public Page(int number) {
+        size = 4096;                // 4 KB-os lapméret
+        dirty = false;
+        ref = false;
+        isInMemory = false;         // kezdetben egyetlen lap sincsa a memóriában
+        pageNumber = number;
+    }
+
+
+    // Getterk
+
+    public boolean getDirty() {
+        return dirty;
+    }
+
+   public boolean getRef() {
+        return ref;
+    }
+
+    public boolean getIsInMemory() {
+        return isInMemory;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
+    }
+
+    public int[] getData() {
+        return data;
+    }
+
+
+    // Setterek
+
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    public void setRef(boolean ref) {
+        this.ref = ref;
+    }
+
+    public void setIsInMemory(boolean isInMemory) {
+        this.isInMemory = isInMemory;
+    }
+
+    public void setData(int[] data) {
+        this.data = data;
+    }
 
 
 }
