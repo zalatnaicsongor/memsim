@@ -9,21 +9,6 @@ package memsim_java;
 public class Page {
 
     /**
-     * A lapméret bájtokban.
-     *
-     * Néhány lehetőség ha lapmérettel akarunk variálni (16 bites cimtartomány esetén):
-     *      16 KB   4 lap
-     *      4 KB    16 lap
-     *      2 KB    32 lap
-     *      512 B   128 lap
-     *      256 B   256 lap
-     *
-     * FIXME
-     *   a lapméretet talán a memory osztályban is elhelyezhetnénk
-     */
-    private int size;
-
-    /**
      * Dirty bit.
      * Ha a lapon modosítás történt, értéke true.
      */
@@ -58,15 +43,15 @@ public class Page {
      * @param number A lapsorszám.
      */
     public Page(int number) {
-        size = 4096;                // 4 KB-os lapméret
         dirty = false;
         ref = false;
-        isInMemory = false;         // kezdetben egyetlen lap sincsa a memóriában
+        isInMemory = false;                         // kezdetben egyetlen lap sincs a memóriában
         pageNumber = number;
+        data = new int[Memory.PAGESIZE];            // ?
     }
 
 
-    // Getterk
+    // Getterek
 
     public boolean getDirty() {
         return dirty;

@@ -5,11 +5,65 @@ import java.util.*;
 public class Memory {
 
     public static final int ADDRESSLENGTH = 16;
+    
+    /**
+     * A fizikai címtartomány legyen 14 bites. A virtuális címtarto-
+     * mány negyede.
+     */
+    public static final int PHYADDRESSLENGTH = 14;
+
+    /**
+     * A lapméret bájtokban.
+     * A lapméret legyen egyenlőre 4 KB-os. Ekkor a virtuális cimtarto-
+     * mány 16 lapból, a fizikai pedig 4 lapból áll.
+     */
+    public static final int PAGESIZE = 4096;
+     /* Néhány lehetőség ha lapmérettel akarunk variálni (16 bites
+      * cimtartomány esetén):
+      *      16 KB   4 lap
+      *      4 KB    16 lap
+      *      2 KB    32 lap
+      *      512 B   128 lap
+      *      256 B   256 lap
+      */
+
+    /**
+     * A lapkeretek száma.
+     */
+    public static final int NUMBEROFPAGEFRAMES = (int)( Math.pow(2, PHYADDRESSLENGTH) / PAGESIZE );
+
+    /**
+     * Az összes lap száma.
+     */
+    public static final int NUMBEROFPAGES = (int)( Math.pow(2, ADDRESSLENGTH) / PAGESIZE );
 
     private int size;
     private int maxContFreeSpace;
     private int freeSpace;
+
+
     private ArrayList<Integer> data;
+    /* FIXME
+     * Gondolom a fenti data helyett jönnek be a lapkeretek, amelyek
+     * az adatot tartalmazzák. Emiatt módosítni kell az osztályon...
+     *
+     *     |
+     *     |
+     *     |
+     *     V
+     */
+
+    /**
+     * A lapkeretek láncolt listája.
+     */
+    LinkedList<Page> pageFrames;
+
+    /**
+     * A lapok.
+     * FIXME: Egyenlőre itt, nem külön osztályban.
+     */
+    ArrayList<Page> Pages;
+
     private static Memory instance;
     public ArrayList<Pointer> pointers = new ArrayList<Pointer>();
 
