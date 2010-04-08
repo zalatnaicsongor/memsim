@@ -10,10 +10,28 @@ import cache.algorithm.*;
  */
 public class Main {
 
+    //ennyi ideig tart hozzájuk fordulni
+    public static final int cacheTime = 1;
+    public static final int memoryTime = 10;
+    public static final int virtualTime = 100;
+
+    //ennyiszer fordultunk hozzájuk ebben a futásban
+    public static int cacheUsed = 0;
+    public static int memoryUsed = 0;
+    public static int virtualUsed = 0;
+
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+
+        //Szerkezet:
+        //args-ban kap egy file-t, amiber a műveletek előre le vannk generálva
+        //strategy-ket, hogy ebben a futásban mit használ
+        //mem, cache és virt mértetket
+        //ezek alapján lefut, és a végén a statisztikát adott formában file-ba írja
+        //ebből egy másik osztály/program/script grafikont csinálhat...
+
         Memory.createMemory();
         Memory memoria = Memory.getInstance();
         try {

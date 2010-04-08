@@ -47,6 +47,7 @@ public class VirtMemory {
      * @param out Az eldobandó lap.
      */
     public void throwOutPage(Page out) {
+        out.setIsInMemory(false); //már nem lesz a mem-ben, most dobjuk ki
         if (out.getDirty()) {
             pages.set(out.getPageNumber(), out);        // ha modosított, visszaírjuk a helyére
         }
@@ -59,8 +60,19 @@ public class VirtMemory {
      */
     public void loadPageIntoMemory(int pageNumber) {
         // a betöltendő lap kiválasztása pageNumber alapján
-        Page toLoad = pages.get(pages.indexOf(new Page(pageNumber)));   // elvben pages.get(pageNumber) is elég lenne,
-                                                                        // de így biztonságosabb
+        //Page toLoad = pages.get(pages.indexOf(new Page(pageNumber)));
+        //ez így BIZTOS nem jó, az equals csak akkor true, ha ugyanarra hivatkozik
+        //és mivel itt NEW, ezért az nem ugyanaz, see API
+        Page toLoad = null;
+        Iterator<Page> it = pages.iterator();
+        while (it.hasNext()) {
+            Page tempPage = it.next();
+            if (tempPage.getPageNumber() == pageNumber) {
+                toLoad = tempPage;
+                break;
+            }
+        }
+
         toLoad.setDirty(false);
         toLoad.setRef(true);                            // a lapra hivatkoztak, ezért is töltjük be
         toLoad.setIsInMemory(true);

@@ -124,12 +124,15 @@ public class Memory {
             //Ha már van hely, akkor jöhet az új lap
             /*
              * Mégpedig a pageNumber-adik sorszámú?
-             * Ha igen:
+             * Ha igen: ÚGYVAN
              */
             virtMem.loadPageIntoMemory(pageNumber);
+            Main.virtualUsed++;
+            readByte(address); //rekurzívan hívom újra, itt már nem lesz fault
 		}
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most használtuk
         pageReplacer.doTheAccounting(hereItIs, pageFrames);
+        Main.memoryUsed++;
 		return hereItIs.readByte(physicalAddress);
 	
     }
@@ -143,6 +146,37 @@ public class Memory {
         /*
          * igen, akkor is be kell.
          */
+
+        //nézd át, hogy jó e a logika, de ez csak kopi-pészt szerintem.
+
+
+        int pageNumber = address >>> PHYSADDRESSLENGTH; //felső bites lapcím
+		int mask = (~0) >>> (ADDRESSLENGTH - PHYSADDRESSLENGTH);
+		int physicalAddress = address & mask; //fizikai cím
+		Page hereItIs = null;
+		try {
+            //ha bennvan, akkor béke, ha nem, akkor hibát dob
+			hereItIs = getPageFromPhysicalMemory(pageNumber);
+		} catch (PageFaultException pf) {
+            if (pageFrames.size() == NUMBEROFPAGEFRAMES) {
+			    Page out = pageReplacer.whichToThrowOut(pageFrames);
+                //ha megvan, akkor valahogy kidobni
+                //lehet hogy ez is alg.függő, és akkor nem itt kellene hogy legyen
+                virtMem.throwOutPage(out);
+            }
+            //Ha már van hely, akkor jöhet az új lap
+            /*
+             * Mégpedig a pageNumber-adik sorszámú?
+             * Ha igen: ÚGYVAN
+             */
+            virtMem.loadPageIntoMemory(pageNumber);
+            Main.virtualUsed++;
+            writeByte(address, data); //rekurzívan hívom újra, itt már nem lesz fault
+		}
+        //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most használtuk
+        pageReplacer.doTheAccounting(hereItIs, pageFrames);
+        Main.memoryUsed++;
+		hereItIs.writeByte(physicalAddress, data);
     }
 
     public Pointer allocPointer(int wordCount) throws MemorySpaceException {
