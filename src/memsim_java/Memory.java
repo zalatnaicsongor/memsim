@@ -126,7 +126,7 @@ public class Memory {
              * Mégpedig a pageNumber-adik sorszámú?
              * Ha igen:
              */
-            virtMem.LoadPageIntoMemory(pageNumber);
+            virtMem.loadPageIntoMemory(pageNumber);
 		}
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most használtuk
         pageReplacer.doTheAccounting(hereItIs, pageFrames);
