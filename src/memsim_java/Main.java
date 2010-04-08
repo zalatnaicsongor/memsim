@@ -14,7 +14,7 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Memory.createMemory(65536);
+        Memory.createMemory();
         Memory memoria = Memory.getInstance();
         try {
             Cache.create(32, 32, 2);

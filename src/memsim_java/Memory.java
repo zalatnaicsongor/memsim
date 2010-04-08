@@ -4,13 +4,21 @@ import java.util.*;
 
 public class Memory {
 
+    /**
+     * Virtuális címtartomány.
+     */
     public static final int ADDRESSLENGTH = 16;
     
     /**
      * A fizikai címtartomány legyen 14 bites. A virtuális címtarto-
      * mány negyede.
      */
-    public static final int PHYADDRESSLENGTH = 14;
+    public static final int PHYSADDRESSLENGTH = 14;
+
+    /**
+     * Az egész memória mérete bájtokban.
+     */
+    public static final int SIZE = (int) Math.pow(2, ADDRESSLENGTH);    // 65536
 
     /**
      * A lapméret bájtokban.
@@ -27,17 +35,16 @@ public class Memory {
       *      256 B   256 lap
       */
 
-    /**
+   /**
      * A lapkeretek száma.
      */
-    public static final int NUMBEROFPAGEFRAMES = (int)( Math.pow(2, PHYADDRESSLENGTH) / PAGESIZE );
+    public static final int NUMBEROFPAGEFRAMES = (int)(Math.pow(2, PHYSADDRESSLENGTH)) / PAGESIZE;
 
     /**
      * Az összes lap száma.
      */
-    public static final int NUMBEROFPAGES = (int)( Math.pow(2, ADDRESSLENGTH) / PAGESIZE );
+    public static final int NUMBEROFPAGES = SIZE / PAGESIZE;
 
-    private int size;
     private int maxContFreeSpace;
     private int freeSpace;
 
@@ -45,12 +52,15 @@ public class Memory {
      * A lapkeretek láncolt listája.
      */
     LinkedList<Page> pageFrames;
+    
+    // FIXME
+    private ArrayList<Integer> data;
 
     /**
      * A lapok.
      * FIXME: Egyenlőre itt, nem külön osztályban.
      */
-    ArrayList<Page> Pages;
+    ArrayList<Page> pages;
 
     private static Memory instance;
     public ArrayList<Pointer> pointers = new ArrayList<Pointer>();
@@ -64,7 +74,7 @@ public class Memory {
 	 * 
 	 * @author zealot
 	 */
-	public Page getPageFromPhysicalMemory(int pageNumber) throws PageFault {
+	public Page getPageFromPhysicalMemory(int pageNumber) throws PageFaultException {
 		Iterator<Page> it = pageFrames.iterator();
         Page ret = null;
 		while (it.hasNext()) {
@@ -74,7 +84,7 @@ public class Memory {
 			}
 		}
         if (ret == null) {
-    	    throw new PageFault("A lap nincs a fizikai memóriában!");
+    	    throw new PageFaultException("A lap nincs a fizikai memóriában!");
         }
         return ret;
 	}
@@ -94,14 +104,14 @@ public class Memory {
     }
 
     public int readByte(int address) {
-        int pageNumber = address >>> PHYADDRESSLENGTH; //felső bites lapcím
-		int mask = (~0) >>> (ADDRESSLENGTH - PHYADDRESSLENGTH);
+        int pageNumber = address >>> PHYSADDRESSLENGTH; //felső bites lapcím
+		int mask = (~0) >>> (ADDRESSLENGTH - PHYSADDRESSLENGTH);
 		int physicalAddress = address & mask; //fizikai cím
 		Page hereItIs = null;
 		try {
             //ha bennvan, akkor béke, ha nem, akkor hibát dob
 			hereItIs = getPageFromPhysicalMemory(pageNumber);
-		} catch (PageFault pf) {
+		} catch (PageFaultException pf) {
             if (pageFrames.size() == NUMBEROFPAGEFRAMES) {
 			    Page out = pageReplacer.whichToThrowOut(pageFrames);
                 //ha megvan, akkor valahogy kidobni
@@ -134,7 +144,7 @@ public class Memory {
         boolean vanHely = false;
         Pointer retval;
 
-        if (meret > this.freeSpace || meret > this.size) {
+        if (meret > this.freeSpace || meret > SIZE) {
             throw new MemorySpaceException("Nincs elég memória");
         }
         if (this.getMaxContFreeSpace() < meret) {
@@ -153,7 +163,7 @@ public class Memory {
         }
 
         if (!vanHely) {
-            szabadmeret = (this.size) - kezdocim;
+            szabadmeret = (SIZE) - kezdocim;
             if (szabadmeret < meret) {
                 throw new MemorySpaceException("Valami nagy baj van!");
             }
@@ -175,15 +185,31 @@ public class Memory {
             temp.add(szabadMeret);
             kezdoCim = ptr.getAddress() + ptr.getSizeInBytes();
         }
-        temp.add((this.size) - kezdoCim); //Vége és az utolsó ptr közötti méret
+        temp.add((SIZE) - kezdoCim); //Vége és az utolsó ptr közötti méret
         this.setMaxContFreeSpace(java.util.Collections.max(temp));
         System.out.println("Legnagyobb szabad lyuk: " + this.getMaxContFreeSpace() + " byte");
     }
 
-    protected Memory(int size) {
-        this.size = size;
-        this.maxContFreeSpace = size;
-        this.freeSpace = size;
+        protected Memory() {
+        this.maxContFreeSpace = SIZE;
+
+        // a lapok létrehozása
+        pages = new ArrayList<Page>(NUMBEROFPAGES);
+        for (int i = 0; i < NUMBEROFPAGES; i++) {
+            pages.add(new Page(i));                     // lap létrehozása sorszámával inicializálva
+        }
+
+        // a lapkeretek létrehozása, kezdetben nincsenek bennt lapok
+        pageFrames = new LinkedList<Page>();
+
+//****
+        this.data = new ArrayList<Integer>();
+        for (int i = 0; i < SIZE; i++) {
+            data.add(0); // inicializáljuk a memóriát!
+        }
+//****
+
+        this.freeSpace = SIZE;
     }
 
     public Pointer getPointer(int address) {
@@ -195,9 +221,6 @@ public class Memory {
         return null;
     }
 
-    public int getSize() {
-        return this.size;
-    }
 
     public void setMaxContFreeSpace(int maxContFreeSpace) {
         this.maxContFreeSpace = maxContFreeSpace;
@@ -215,8 +238,8 @@ public class Memory {
         return this.freeSpace;
     }
 
-    public static void createMemory(int size) {
-        Memory.instance = new Memory(size);
+    public static void createMemory() {
+        Memory.instance = new Memory();
     }
 
     public static Memory getInstance() {
