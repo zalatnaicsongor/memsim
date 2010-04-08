@@ -52,7 +52,7 @@ public class Memory {
     /**
      * A lapkeretek láncolt listája.
      */
-    LinkedList<Page> pageFrames;
+    private LinkedList<Page> pageFrames;
     
     // FIXME
     private ArrayList<Integer> data;
@@ -119,11 +119,16 @@ public class Memory {
 			    Page out = pageReplacer.whichToThrowOut(pageFrames);
                 //ha megvan, akkor valahogy kidobni
                 //lehet hogy ez is alg.függő, és akkor nem itt kellene hogy legyen
+                virtMem.throwOutPage(out);
             }
             //Ha már van hely, akkor jöhet az új lap
+            /*
+             * Mégpedig a pageNumber-adik sorszámú?
+             * Ha igen:
+             */
+            virtMem.LoadPageIntoMemory(pageNumber);
 		}
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most használtuk
-        // lista elejre vagy mittomén
         pageReplacer.doTheAccounting(hereItIs, pageFrames);
 		return hereItIs.readByte(physicalAddress);
 	
@@ -135,6 +140,9 @@ public class Memory {
         //de most itt hagyom, mert nemtom, hogy ha írni akarok és nincs bent
         //akkor is be kell e hozni, vagy hogy
         // de ha igen, akkor u.a., mint a read...
+        /*
+         * igen, akkor is be kell.
+         */
     }
 
     public Pointer allocPointer(int wordCount) throws MemorySpaceException {
@@ -193,7 +201,7 @@ public class Memory {
         System.out.println("Legnagyobb szabad lyuk: " + this.getMaxContFreeSpace() + " byte");
     }
 
-        protected Memory() {
+    protected Memory() {
         this.maxContFreeSpace = SIZE;
     
         // virtuálsi memória felépitése
@@ -236,6 +244,10 @@ public class Memory {
 
     public int getFreeSpace() {
         return this.freeSpace;
+    }
+
+    public LinkedList<Page> getPageFrames() {
+        return pageFrames;
     }
 
     public static void createMemory() {

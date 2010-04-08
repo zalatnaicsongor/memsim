@@ -24,6 +24,11 @@ public class VirtMemory {
      */
     public ArrayList<Page> pages;
 
+    /**
+     * A lapkeretek láncolt listája a Memory-ból.
+     */
+    private LinkedList<Page> pageFrames = Memory.getInstance().getPageFrames();
+
 
     /**
      * Konstruktor, amely a lapokat létrehozza és inicializájla.
@@ -36,6 +41,34 @@ public class VirtMemory {
     }
 
 
+    /**
+     * Lap kidobás a memóriából.
+     * @param out Az eldobandó lap.
+     */
+    public void throwOutPage(Page out) {
+        if (out.getDirty()) {
+            pages.set(out.getPageNumber(), out);        // ha modosított, visszaírjuk a helyére
+        }
+        pageFrames.remove(out);                         // törlés a memóriából
+    }
+
+    /**
+     * Adott sorszámú lap betöltése a memóriába.
+     * @param pageNumber A betöltendő lap sorszáma, azonosítószáma.
+     */
+    public void LoadPageIntoMemory(int pageNumber) {
+        // a betöltendő lap kiválasztása pageNumber alapján
+        Page toLoad = pages.get(pages.indexOf(new Page(pageNumber)));   // elvben pages.get(pageNumber) is elég lenne,
+                                                                        // de így biztonságosabb
+        toLoad.setDirty(false);
+        toLoad.setRef(true);                            // a lapra hivatkoztak, ezért is töltjük be
+        toLoad.setIsInMemory(true);
+
+        pageFrames.add(toLoad);                         // a lapkeretek végéhez fűzzük
+
+    }
+
+
     // Getterek
 
     public static VirtMemory getInstance() {
@@ -43,7 +76,15 @@ public class VirtMemory {
         return instance;
     }
 
+    public ArrayList<Page> getPages() {
+        return pages;
+    }
+
 
     // Setterek
+
+    public void setPages(ArrayList<Page> pages) {
+        this.pages = pages;
+    }
 
 }
