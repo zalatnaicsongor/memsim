@@ -1,8 +1,7 @@
 package virtmemory.algorithm;
 
 import java.util.LinkedList;
-import memsim_java.Page;
-import memsim_java.PageReplaceStrategy;
+import memsim_java.*;
 
 /**
  * FIFO lapcserélő algolritmus.
@@ -29,7 +28,7 @@ public class PageReplaceFIFO implements PageReplaceStrategy {
      * @return A kidobandó lap.
      */
     public Page whichToThrowOut(LinkedList<Page> physMem) {
-        return physMem.getFirst();
+        return physMem.getFirst();                      // a legelső
     }
 
 }
