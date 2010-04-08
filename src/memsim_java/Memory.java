@@ -2,6 +2,12 @@ package memsim_java;
 
 import java.util.*;
 
+
+/**
+ *
+ *
+ * @author Bán Dénes, Kádár István, Zalatnai Csongor
+ */
 public class Memory {
 
     /**
@@ -40,11 +46,6 @@ public class Memory {
      */
     public static final int NUMBEROFPAGEFRAMES = (int)(Math.pow(2, PHYSADDRESSLENGTH)) / PAGESIZE;
 
-    /**
-     * Az összes lap száma.
-     */
-    public static final int NUMBEROFPAGES = SIZE / PAGESIZE;
-
     private int maxContFreeSpace;
     private int freeSpace;
 
@@ -56,16 +57,17 @@ public class Memory {
     // FIXME
     private ArrayList<Integer> data;
 
-    /**
-     * A lapok.
-     * FIXME: Egyenlőre itt, nem külön osztályban.
-     */
-    ArrayList<Page> pages;
+
 
     private static Memory instance;
     public ArrayList<Pointer> pointers = new ArrayList<Pointer>();
 
-    public PageReplacer pageReplacer;
+    /**
+     * A memory objecthez tartozó virtuális memória object.
+     */
+    private VirtMemory virtMem;
+
+    public PageReplaceStrategy pageReplacer;
 
 	/**
 	 * Végignézi a fizikai memóriában lévő lapokat.
@@ -102,6 +104,7 @@ public class Memory {
         System.out.println("Kompaktáltam");
         this.updateContFreeSpace();
     }
+
 
     public int readByte(int address) {
         int pageNumber = address >>> PHYSADDRESSLENGTH; //felső bites lapcím
@@ -192,12 +195,9 @@ public class Memory {
 
         protected Memory() {
         this.maxContFreeSpace = SIZE;
-
-        // a lapok létrehozása
-        pages = new ArrayList<Page>(NUMBEROFPAGES);
-        for (int i = 0; i < NUMBEROFPAGES; i++) {
-            pages.add(new Page(i));                     // lap létrehozása sorszámával inicializálva
-        }
+    
+        // virtuálsi memória felépitése
+        virtMem = VirtMemory.getInstance();
 
         // a lapkeretek létrehozása, kezdetben nincsenek bennt lapok
         pageFrames = new LinkedList<Page>();

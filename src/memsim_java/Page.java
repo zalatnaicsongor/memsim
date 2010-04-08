@@ -47,13 +47,36 @@ public class Page {
         ref = false;
         isInMemory = false;                         // kezdetben egyetlen lap sincs a memóriában
         pageNumber = number;
-        data = new int[Memory.PAGESIZE];            // ?
+        data = new int[Memory.PAGESIZE];            // lapméretű adatterület
     }
 
-    //byte olvasása a lapról
+    /**
+     * byte olvasása a lapról
+     */
     public int readByte(int physicalAddress) {
+        ref = true;                                 // hivatkoztam a lapra
         return data[physicalAddress];
-        //itt egy HASZNÁLTAM++ kellene, de a ref az nem az (akkor mi is??)
+    }
+
+    /**
+     * Bájt írása a lapra.
+     * @param address Erre a címre.
+     * @param data    Ezt az adatot.
+     */
+    public void writeByte(int address, int data) {
+        ref = true;                                 // hivatkoztam a lapra
+        dirty = true;                               // módosítás történt
+        this.data[address] = data;
+    }
+
+    
+    /**
+     * Két lap akkor ugyanaz, ha a sorszámuk (pageNumber) megeegyezik.
+     * @param page A hasonlító lap.
+     * @return true ha megegyeznek.
+     */
+    public boolean equals(Page page) {
+        return pageNumber == page.getPageNumber();
     }
 
     // Getterek
