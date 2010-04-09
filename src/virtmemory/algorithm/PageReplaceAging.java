@@ -5,14 +5,13 @@ import memsim_java.*;
 
 /**
  * NFU lapcserélő algolritmus.
- *   Minden laphoz tartozik egy számláló.
- *   Minden lapcserénél megnézzük a memóriában lévő lapokat és minden lap
- *      R bitjét hozzáadjuk a számlálójához.
- *   A legkisebb számlálójú lapot dobjuk el.
+ *   Mint az NFU, de:
+ *   Először a számlálót 1 bittel jobbra toljuk, majd R-t nem a bal,
+ *   hanem a jobboldali bithez adjuk hozzá.
  *
  * @author Kádár István
  */
-public class PageReplaceNFU implements PageReplaceStrategy, PageReplaceAccountingStrategy {
+public class PageReplaceAging implements PageReplaceStrategy, PageReplaceAccountingStrategy {
 
     /**
      * Visszadja melyik lapot kell kidobni.
@@ -54,19 +53,21 @@ public class PageReplaceNFU implements PageReplaceStrategy, PageReplaceAccountin
      * Adminisztratív tevékenységek lapcserénél.
      * @param physMem A lapkeretek láncolt listája.
      *
-     * Minden lap Ref bitjét hozzáadjuk a számlálójához.
-     * 
+     * Minden lap számlálóját 1-gyel jobbra toljuk és Ref-et a jobboldali
+     * bithez adjuk.
+     *
      * Tannenbaum könyvében úgy szerepel, hogy ez az esemény minden óra-
      * megszakításnál következik be. Knapp G. - Adamis G. Operációs rend-
      * szerek c. könyve szerint azonban lapcserekor történik a számláló modo-
      * sítása. Az utóbbinál maradunk.
      */
     public void doTheAccountingOnPageReplace(LinkedList<Page> physMem) {
-        Page page;
+        long counter;                                   // 64 bites számláló
         for (int i = 0; i < physMem.size(); i++) {
-            page = physMem.get(i);
-            if (page.getRef()) {
-               page.incCounter();
+            counter = physMem.get(i).getCounter();
+            counter >>>= 1;
+            if (physMem.get(i).getRef()) {
+                counter ^= 1 << 62;
             }
         }
     }
