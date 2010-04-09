@@ -12,24 +12,18 @@ public class Page {
      * Dirty bit.
      * Ha a lapon modosítás történt, értéke true.
      */
-    public boolean dirty;
-
-    /**
-     * Hivatkozott bit.
-     * Lapra történő hivatkozáskor (olvasás/írás) lesz true.
-     */
-    public boolean ref;
+    private boolean dirty;
 
     /**
      * Jelenlét/hiány
      * Ha true, a lap bennt van a fizikai memóriában.
      */
-    public boolean isInMemory;
+    private boolean isInMemory;
 
     /**
      * A lap sorszáma, azonosítója.
      */
-    public int pageNumber;
+    private int pageNumber;
 
     /**
      * A lapon lévő adat.
@@ -37,16 +31,34 @@ public class Page {
     public int[] data;
 
 
+    // lapcsere-algoritmusokhoz tartozó adatok
+
+    /**
+     * Hivatkozott bit.
+     * Lapra történő hivatkozáskor (olvasás/írás) lesz true.
+     */
+    private boolean ref;
+
+    /**
+     * A lapohoz tartozó számláló.
+     * 
+     * NFU, Aging algoritmusoknál használatos. Fontos, hogy nem azt tárolja,
+     * hogy hányszor történt hivatkozás a lapra, hanem mindig Ref-et adjuk
+     * hozzá lapcserekor.
+     */
+    private long counter;
+
     /**
      * Konstruktor
      * @param number A lapsorszám.
      */
     public Page(int number) {
         dirty = false;
-        ref = false;
         isInMemory = false;                         // kezdetben egyetlen lap sincs a memóriában
         pageNumber = number;
         data = new int[Memory.PAGESIZE];            // lapméretű adatterület
+        ref = false;
+        counter = 0;
     }
 
     /**
@@ -106,6 +118,10 @@ public class Page {
         return data;
     }
 
+    public long getCounter() {
+        return counter;
+    }
+
 
     // Setterek
 
@@ -125,5 +141,15 @@ public class Page {
         this.data = data;
     }
 
+    public void setCounter(long counter) {
+        this.counter = counter;
+    }
+
+    /**
+     * Eggyel növeli a számláló értékét.
+     */
+    public void incCounter() {
+       this.counter++;
+    }
 
 }

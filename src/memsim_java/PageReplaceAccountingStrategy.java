@@ -25,7 +25,7 @@ public interface PageReplaceAccountingStrategy {
     public void doTheAccountingOnWrite(Page used, LinkedList<Page> physMem);
 
     /**
-     * Adminisztratív tevékenységek lapcserénél.
+     * Adminisztratív tevékenységek lapcserénél. (Néhány algoritmusnál szükséges.)
      * @param physMem A lapkeretek láncolt listája.
      */
     public void doTheAccountingOnPageReplace(LinkedList<Page> physMem);
