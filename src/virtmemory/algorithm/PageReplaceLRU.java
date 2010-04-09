@@ -11,20 +11,7 @@ import memsim_java.*;
  *
  * @author Kádár István
  */
-public class PageReplaceLRU implements PageReplaceStrategy {
-
-    /**
-     * A lapon történt eseményeket adminisztrálása. (pl.: usageCount++, lista végére fűzés)
-     * @param used A kérdéses lap.
-     * @param physMem A lapkeretek láncolt listája.
-     */
-    public void doTheAccounting(Page used, LinkedList<Page> physMem) {
-        // a lista végére fűzzük a legelső lapot
-        Page first = physMem.getFirst();
-        physMem.addLast(first);
-        physMem.removeFirst();
-    }
-
+public class PageReplaceLRU implements PageReplaceStrategy, PageReplaceAccountingStrategy {
 
     /**
      * Visszadja melyik lapot kell kidobni.
@@ -33,6 +20,38 @@ public class PageReplaceLRU implements PageReplaceStrategy {
      */
     public Page whichToThrowOut(LinkedList<Page> physMem) {
         return physMem.getFirst();                      // a legelső
+    }
+
+    
+    /**
+     * Adminisztratív tevékenységek lapról történő olvasáskor.
+     * @param used A kérdéses lap.
+     * @param physMem A lapkeretek láncolt listája.
+     */
+    public void doTheAccountingOnRead(Page used, LinkedList<Page> physMem) {
+        // a lista végére fűzzük a legelső lapot
+        Page first = physMem.getFirst();
+        physMem.addLast(first);
+        physMem.removeFirst();
+    }
+
+    /**
+     * Adminisztratív tevékenységek lapa történő íráskor.
+     * @param used A kérdéses lap.
+     * @param physMem A lapkeretek láncolt listája.
+     */
+    public void doTheAccountingOnWrite(Page used, LinkedList<Page> physMem) {
+        // a lista végére fűzzük a legelső lapot
+        Page first = physMem.getFirst();
+        physMem.addLast(first);
+        physMem.removeFirst();
+    }
+
+    /**
+     * Adminisztratív tevékenységek laphibánál.
+     * @param physMem A lapkeretek láncolt listája.
+     */
+    public void doTheAccountingOnPageFault(LinkedList<Page> physMem) {
     }
 
 }

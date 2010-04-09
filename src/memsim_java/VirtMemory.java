@@ -47,7 +47,7 @@ public class VirtMemory {
      * @param out Az eldobandó lap.
      */
     public void throwOutPage(Page out) {
-        out.setIsInMemory(false); //már nem lesz a mem-ben, most dobjuk ki
+        out.setIsInMemory(false);                       // már nem lesz a mem-ben, most dobjuk ki
         if (out.getDirty()) {
             pages.set(out.getPageNumber(), out);        // ha modosított, visszaírjuk a helyére
         }
@@ -60,18 +60,34 @@ public class VirtMemory {
      */
     public void loadPageIntoMemory(int pageNumber) {
         // a betöltendő lap kiválasztása pageNumber alapján
-        //Page toLoad = pages.get(pages.indexOf(new Page(pageNumber)));
+        Page toLoad = pages.get(pages.indexOf(new Page(pageNumber)));
         //ez így BIZTOS nem jó, az equals csak akkor true, ha ugyanarra hivatkozik
         //és mivel itt NEW, ezért az nem ugyanaz, see API
-        Page toLoad = null;
-        Iterator<Page> it = pages.iterator();
-        while (it.hasNext()) {
-            Page tempPage = it.next();
-            if (tempPage.getPageNumber() == pageNumber) {
-                toLoad = tempPage;
-                break;
+        /* Page toLoad = null;
+         * Iterator<Page> it = pages.iterator();
+         * while (it.hasNext()) {
+         *    Page tempPage = it.next();
+         *    if (tempPage.getPageNumber() == pageNumber) {
+         *        toLoad = tempPage;
+         *        break;
+         *    }
+         * }
+         *
+         * Az ugyanarra hivatkozás az a '==' operátor, az equalst pedig személyesn
+         * irtam meg a Page osztályban:
+         *
+            ** Két lap akkor ugyanaz, ha a sorszámuk (pageNumber) megegyezik.
+             * @param page A hasonlító lap.
+             * @return true ha megegyeznek.
+             *
+            public boolean equals(Page page) {
+                return pageNumber == page.getPageNumber();
             }
-        }
+         *
+         * http://leepoint.net/notes-java/data/expressions/22compareobjects.html
+         */
+
+
 
         toLoad.setDirty(false);
         toLoad.setRef(true);                            // a lapra hivatkoztak, ezért is töltjük be

@@ -9,17 +9,7 @@ import memsim_java.*;
  *
  * @author Kádár István
  */
-public class PageReplaceRandom implements PageReplaceStrategy {
-
-    /**
-     * A lapon történt eseményeket adminisztrálása. (pl.: usageCount++, lista végére fűzés)
-     * @param used A kérdéses lap.
-     * @param physMem A lapkeretek láncolt listája.
-     */
-    public void doTheAccounting(Page used, LinkedList<Page> physMem) {
-
-    }
-
+public class PageReplaceRandom implements PageReplaceStrategy, PageReplaceAccountingStrategy {
     
     /**
      * Visszadja melyik lapot kell kidobni.
@@ -30,6 +20,22 @@ public class PageReplaceRandom implements PageReplaceStrategy {
         // véletlen szám 0-tól physMem.size() - 1 -ig.
         int rand = (int)(Math.random() * physMem.size());
         return physMem.get(rand);
+    }
+
+     /*
+     * FIXME: nemtudom ezeket implementálni kell-e, a readByte/writeByte miatt?
+     * de biztos, hogy nem kell csinálniuk semmit.
+     */
+    public void doTheAccountingOnRead(Page used, LinkedList<Page> physMem) {
+        
+    }
+
+    public void doTheAccountingOnWrite(Page used, LinkedList<Page> physMem) {
+
+    }
+
+    public void doTheAccountingOnPageFault(LinkedList<Page> physMem) {
+
     }
 
 }

@@ -67,7 +67,7 @@ public class Memory {
      */
     private VirtMemory virtMem;
 
-    public PageReplaceStrategy pageReplacer;
+    public PageReplaceAccountingStrategy pageReplacer;
 
 	/**
 	 * Végignézi a fizikai memóriában lévő lapokat.

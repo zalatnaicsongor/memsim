@@ -10,18 +10,8 @@ import memsim_java.*;
  *
  * @author Kádár István
  */
-public class PageReplaceFIFO implements PageReplaceStrategy {
+public class PageReplaceFIFO implements PageReplaceStrategy, PageReplaceAccountingStrategy {
 
-    /**
-     * A lapon történt eseményeket adminisztrálása. (pl.: usageCount++, lista végére fűzés)
-     * @param used A kérdéses lap.
-     * @param physMem A lapkeretek láncolt listája.
-     */
-    public void doTheAccounting(Page used, LinkedList<Page> physMem) {
-
-    }
-
-    
     /**
      * Visszadja melyik lapot kell kidobni.
      * @param physMem A lapkeretek láncolt listája.
@@ -29,6 +19,23 @@ public class PageReplaceFIFO implements PageReplaceStrategy {
      */
     public Page whichToThrowOut(LinkedList<Page> physMem) {
         return physMem.getFirst();                      // a legelső
+    }
+
+
+    /*
+     * FIXME: nemtudom ezeket implementálni kell-e, a readByte/writeByte miatt?
+     * de biztos, hogy nem kell csinálniuk semmit.
+     */
+    public void doTheAccountingOnRead(Page used, LinkedList<Page> physMem) {
+
+    }
+
+    public void doTheAccountingOnWrite(Page used, LinkedList<Page> physMem) {
+
+    }
+
+    public void doTheAccountingOnPageFault(LinkedList<Page> physMem) {
+
     }
 
 }

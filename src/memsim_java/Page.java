@@ -31,7 +31,6 @@ public class Page {
      */
     public int pageNumber;
 
-
     /**
      * A lapon lévő adat.
      */
@@ -51,7 +50,9 @@ public class Page {
     }
 
     /**
-     * byte olvasása a lapról
+     * Bájt olvasása a lapról.
+     * @param physicalAddress Erről a címről.
+     * @return A kiolvasott adat.
      */
     public int readByte(int physicalAddress) {
         ref = true;                                 // hivatkoztam a lapra
@@ -71,7 +72,7 @@ public class Page {
 
     
     /**
-     * Két lap akkor ugyanaz, ha a sorszámuk (pageNumber) megeegyezik.
+     * Két lap akkor ugyanaz, ha a sorszámuk (pageNumber) megegyezik.
      * @param page A hasonlító lap.
      * @return true ha megegyeznek.
      */

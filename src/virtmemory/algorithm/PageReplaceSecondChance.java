@@ -11,18 +11,7 @@ import memsim_java.*;
  *
  * @author Kádár István
  */
-public class PageReplaceSecondChance implements PageReplaceStrategy {
-
-    /**
-     * A lapon történt eseményeket adminisztrálása. (pl.: usageCount++,
-     * lista végére fűzés, stb.)
-     * @param used A kérdéses lap.
-     * @param physMem A lapkeretek láncolt listája.
-     */
-    public void doTheAccounting(Page used, LinkedList<Page> physMem) {
-
-    }
-
+public class PageReplaceSecondChance implements PageReplaceStrategy, PageReplaceAccountingStrategy {
 
     /**
      * Visszadja melyik lapot kell kidobni.
@@ -40,6 +29,37 @@ public class PageReplaceSecondChance implements PageReplaceStrategy {
         }
 
         return first;
+    }
+
+
+    /**
+     * Adminisztratív tevékenységek lapról történő olvasáskor.
+     * @param used A kérdéses lap.
+     * @param physMem A lapkeretek láncolt listája.
+     */
+    public void doTheAccountingOnRead(Page used, LinkedList<Page> physMem) {
+        used.setRef(true);                              // hivatkozás történt
+    }
+
+    /**
+     * Adminisztratív tevékenységek lapa történő íráskor.
+     * @param used A kérdéses lap.
+     * @param physMem A lapkeretek láncolt listája.
+     */
+    public void doTheAccountingOnWrite(Page used, LinkedList<Page> physMem) {
+        used.setRef(true);                              // hivatkozás történt
+        /*
+         * dirty-nek nincs köze az algoritmushoz ezért nem
+         * itt, hanem a Page.writeByte-ban állitjuk be.
+         */
+    }
+
+    /**
+     * Adminisztratív tevékenységek laphibánál.
+     * @param physMem A lapkeretek láncolt listája.
+     */
+    public void doTheAccountingOnPageFault(LinkedList<Page> physMem) {
+
     }
 
 }
