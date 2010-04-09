@@ -12,5 +12,6 @@ package memsim_java;
 public class CacheRowNotFoundException extends Exception {
     public CacheRowNotFoundException(String Message) {
         super(Message);
+        Main.cacheFault++; //inkrementáljuk a cachefault változót
     }
 }
