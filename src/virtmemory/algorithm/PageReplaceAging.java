@@ -4,7 +4,7 @@ import java.util.LinkedList;
 import memsim_java.*;
 
 /**
- * NFU lapcserélő algolritmus.
+ * Aging lapcserélő algolritmus.
  *   Mint az NFU, de:
  *   Először a számlálót 1 bittel jobbra toljuk, majd R-t nem a jobb,
  *   hanem a baloldali bithez adjuk hozzá.
@@ -55,7 +55,6 @@ public class PageReplaceAging implements PageReplaceStrategy, PageReplaceAccount
      *
      * Minden lap számlálóját 1-gyel jobbra toljuk és Ref-et a baloldali
      * bithez adjuk.
-     *
      * Tannenbaum könyvében úgy szerepel, hogy ez az esemény minden óra-
      * megszakításnál következik be. Knapp G. - Adamis G. Operációs rend-
      * szerek c. könyve szerint azonban lapcserekor történik a számláló modo-

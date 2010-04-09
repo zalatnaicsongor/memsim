@@ -22,7 +22,7 @@ public class PageReplaceNFU implements PageReplaceStrategy, PageReplaceAccountin
     public Page whichToThrowOut(LinkedList<Page> physMem) {
         // minmumkiválasztás a lapok counter mezője alapján
         Page min = physMem.get(0);
-        for (int i = 1; i < physMem.size(); i++) {
+        for (int i = 1; i < physMem.size(); i++) {      // elég az 1.-től indulni.
             if (physMem.get(i).getCounter() < min.getCounter()) {
                 min = physMem.get(i);
             }
@@ -55,7 +55,6 @@ public class PageReplaceNFU implements PageReplaceStrategy, PageReplaceAccountin
      * @param physMem A lapkeretek láncolt listája.
      *
      * Minden lap Ref bitjét hozzáadjuk a számlálójához.
-     * 
      * Tannenbaum könyvében úgy szerepel, hogy ez az esemény minden óra-
      * megszakításnál következik be. Knapp G. - Adamis G. Operációs rend-
      * szerek c. könyve szerint azonban lapcserekor történik a számláló modo-
