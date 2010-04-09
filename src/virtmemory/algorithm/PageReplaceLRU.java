@@ -48,10 +48,10 @@ public class PageReplaceLRU implements PageReplaceStrategy, PageReplaceAccountin
     }
 
     /**
-     * Adminisztratív tevékenységek laphibánál.
+     * Adminisztratív tevékenységek lapcserénél.
      * @param physMem A lapkeretek láncolt listája.
      */
-    public void doTheAccountingOnPageFault(LinkedList<Page> physMem) {
+    public void doTheAccountingOnPageReplace(LinkedList<Page> physMem) {
     }
 
 }

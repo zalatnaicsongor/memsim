@@ -55,7 +55,9 @@ public class Page {
      * @return A kiolvasott adat.
      */
     public int readByte(int physicalAddress) {
-        ref = true;                                 // hivatkoztam a lapra
+        /*
+         * a ref-et nem itt állítjuk be, hanem az algoritmusok csinálják
+         */
         return data[physicalAddress];
     }
 
@@ -65,7 +67,9 @@ public class Page {
      * @param data    Ezt az adatot.
      */
     public void writeByte(int address, int data) {
-        ref = true;                                 // hivatkoztam a lapra
+        /*
+         * a ref-et nem itt állítjuk be, hanem az algoritmusok csinálják
+         */
         dirty = true;                               // módosítás történt
         this.data[address] = data;
     }

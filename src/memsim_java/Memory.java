@@ -67,7 +67,9 @@ public class Memory {
      */
     private VirtMemory virtMem;
 
-    public PageReplaceAccountingStrategy pageReplacer;
+    // FIXME: ezek szerintem mehetnének a VirtMemory osztályba inkább
+    public PageReplaceAccountingStrategy pageAccounter;
+    public PageReplaceStrategy pageReplacer;
 
 	/**
 	 * Végignézi a fizikai memóriában lévő lapokat.
@@ -115,24 +117,26 @@ public class Memory {
             //ha bennvan, akkor béke, ha nem, akkor hibát dob
 			hereItIs = getPageFromPhysicalMemory(pageNumber);
 		} catch (PageFaultException pf) {
-            if (pageFrames.size() == NUMBEROFPAGEFRAMES) {
+
+            if (pageFrames.size() == NUMBEROFPAGEFRAMES) {  // akkor lapcsere
+                // amelyik lapot kidobjuk
 			    Page out = pageReplacer.whichToThrowOut(pageFrames);
-                //ha megvan, akkor valahogy kidobni
-                //lehet hogy ez is alg.függő, és akkor nem itt kellene hogy legyen
+                // kidobjuk
                 virtMem.throwOutPage(out);
             }
-            //Ha már van hely, akkor jöhet az új lap
-            /*
-             * Mégpedig a pageNumber-adik sorszámú?
-             * Ha igen: ÚGYVAN
-             */
+            //Ha már van hely, akkor jöhet az új lap, a pageNumber-adik
             virtMem.loadPageIntoMemory(pageNumber);
+            //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
+            pageAccounter.doTheAccountingOnPageReplace(pageFrames);
+
             Main.virtualUsed++;
             readByte(address); //rekurzívan hívom újra, itt már nem lesz fault
 		}
-        //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most használtuk
-        pageReplacer.doTheAccounting(hereItIs, pageFrames);
+        
         Main.memoryUsed++;
+
+        //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most OLVASTUK
+        pageAccounter.doTheAccountingOnRead(hereItIs, pageFrames);
 		return hereItIs.readByte(physicalAddress);
 	
     }
@@ -148,6 +152,9 @@ public class Memory {
          */
 
         //nézd át, hogy jó e a logika, de ez csak kopi-pészt szerintem.
+        /*
+         * Szerintem is jónak kéne lennie. :)
+         */
 
 
         int pageNumber = address >>> PHYSADDRESSLENGTH; //felső bites lapcím
@@ -164,18 +171,19 @@ public class Memory {
                 //lehet hogy ez is alg.függő, és akkor nem itt kellene hogy legyen
                 virtMem.throwOutPage(out);
             }
-            //Ha már van hely, akkor jöhet az új lap
-            /*
-             * Mégpedig a pageNumber-adik sorszámú?
-             * Ha igen: ÚGYVAN
-             */
+            //Ha van hely, akkor jöhet az új lap
             virtMem.loadPageIntoMemory(pageNumber);
+            //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
+            pageAccounter.doTheAccountingOnPageReplace(pageFrames);
+
             Main.virtualUsed++;
             writeByte(address, data); //rekurzívan hívom újra, itt már nem lesz fault
 		}
-        //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most használtuk
-        pageReplacer.doTheAccounting(hereItIs, pageFrames);
-        Main.memoryUsed++;
+        
+        Main.memoryUsed++;      // írni nemugyanaz mint olvasni, szerintem ezt lehetne külön számolni
+
+        //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most ÍRTUK
+        pageAccounter.doTheAccountingOnWrite(hereItIs, pageFrames);
 		hereItIs.writeByte(physicalAddress, data);
     }
 

@@ -34,7 +34,7 @@ public class PageReplaceFIFO implements PageReplaceStrategy, PageReplaceAccounti
 
     }
 
-    public void doTheAccountingOnPageFault(LinkedList<Page> physMem) {
+    public void doTheAccountingOnPageReplace(LinkedList<Page> physMem) {
 
     }
 

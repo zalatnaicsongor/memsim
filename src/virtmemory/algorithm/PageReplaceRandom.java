@@ -34,7 +34,7 @@ public class PageReplaceRandom implements PageReplaceStrategy, PageReplaceAccoun
 
     }
 
-    public void doTheAccountingOnPageFault(LinkedList<Page> physMem) {
+    public void doTheAccountingOnPageReplace(LinkedList<Page> physMem) {
 
     }
 
