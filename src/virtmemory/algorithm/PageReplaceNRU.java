@@ -19,6 +19,9 @@ import memsim_java.*;
  */
 public class PageReplaceNRU implements PageReplaceStrategy {
 
+    /** Egyedüli példány. */
+    private static PageReplaceNRU instance = null;
+
     /**
      * 4 ArrayList a 4 osztálynak megfelelőem.
      */
@@ -105,4 +108,20 @@ public class PageReplaceNRU implements PageReplaceStrategy {
         }
     }
 
+    
+    /** Üres konstruktor */
+    private PageReplaceNRU() {
+
+    }
+
+    /**
+     * Singleton
+     * @return példány
+     */
+    public static PageReplaceNRU getInstance() {
+        if (instance == null) {
+            instance = new PageReplaceNRU();
+        }
+        return instance;
+    }
 }

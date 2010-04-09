@@ -13,6 +13,9 @@ import memsim_java.*;
  */
 public class PageReplaceSecondChance implements PageReplaceStrategy {
 
+    /** Egyedüli példány. */
+    private static PageReplaceSecondChance instance = null;
+
     /**
      * Visszadja melyik lapot kell kidobni.
      * @param physMem A lapkeretek láncolt listája.
@@ -62,4 +65,20 @@ public class PageReplaceSecondChance implements PageReplaceStrategy {
 
     }
 
+    
+    /** Üres konstruktor */
+    private PageReplaceSecondChance() {
+
+    }
+
+    /**
+     * Singleton
+     * @return példány
+     */
+    public static PageReplaceSecondChance getInstance() {
+        if (instance == null) {
+            instance = new PageReplaceSecondChance();
+        }
+        return instance;
+    }
 }

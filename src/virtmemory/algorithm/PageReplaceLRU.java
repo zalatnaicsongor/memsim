@@ -13,6 +13,9 @@ import memsim_java.*;
  */
 public class PageReplaceLRU implements PageReplaceStrategy {
 
+    /** Egyedüli példány. */
+    private static PageReplaceLRU instance = null;
+
     /**
      * Visszadja melyik lapot kell kidobni.
      * @param physMem A lapkeretek láncolt listája.
@@ -52,6 +55,23 @@ public class PageReplaceLRU implements PageReplaceStrategy {
      * @param physMem A lapkeretek láncolt listája.
      */
     public void doTheAccountingOnPageReplace(LinkedList<Page> physMem) {
+    }
+
+
+     /** Üres konstruktor */
+    private PageReplaceLRU() {
+
+    }
+
+    /**
+     * Singleton
+     * @return
+     */
+    public static PageReplaceLRU getInstance() {
+        if (instance == null) {
+            instance = new PageReplaceLRU();
+        }
+        return instance;
     }
 
 }

@@ -13,6 +13,9 @@ import memsim_java.*;
  */
 public class PageReplaceAging implements PageReplaceStrategy {
 
+    /** Egyedüli példány. */
+    private static PageReplaceAging instance = null;
+
     /**
      * Visszadja melyik lapot kell kidobni.
      * @param physMem A lapkeretek láncolt listája.
@@ -72,4 +75,19 @@ public class PageReplaceAging implements PageReplaceStrategy {
         }
     }
 
+    /** Üres konstruktor */
+    private PageReplaceAging() {
+
+    }
+
+    /**
+     * Singleton
+     * @return
+     */
+    public static PageReplaceAging getInstance() {
+        if (instance == null) {
+            instance = new PageReplaceAging();
+        }
+        return instance;
+    }
 }

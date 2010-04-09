@@ -10,7 +10,10 @@ import memsim_java.*;
  * @author Kádár István
  */
 public class PageReplaceRandom implements PageReplaceStrategy {
-    
+
+    /** Egyedüli példány. */
+    private static PageReplaceRandom instance = null;
+
     /**
      * Visszadja melyik lapot kell kidobni.
      * @param physMem A lapkeretek láncolt listája.
@@ -22,10 +25,6 @@ public class PageReplaceRandom implements PageReplaceStrategy {
         return physMem.get(rand);
     }
 
-     /*
-     * FIXME: nemtudom ezeket implementálni kell-e, a readByte/writeByte miatt?
-     * de biztos, hogy nem kell csinálniuk semmit.
-     */
     public void doTheAccountingOnRead(Page used, LinkedList<Page> physMem) {
         
     }
@@ -38,4 +37,20 @@ public class PageReplaceRandom implements PageReplaceStrategy {
 
     }
 
+
+    /** Üres konstruktor */
+    private PageReplaceRandom() {
+
+    }
+
+    /**
+     * Singleton
+     * @return példány
+     */
+    public static PageReplaceRandom getInstance() {
+        if (instance == null) {
+            instance = new PageReplaceRandom();
+        }
+        return instance;
+    }
 }

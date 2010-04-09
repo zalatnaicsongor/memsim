@@ -14,6 +14,9 @@ import memsim_java.*;
  */
 public class PageReplaceNFU implements PageReplaceStrategy {
 
+    /** Egyedüli példány. */
+    private static PageReplaceNFU instance = null;
+
     /**
      * Visszadja melyik lapot kell kidobni.
      * @param physMem A lapkeretek láncolt listája.
@@ -22,7 +25,7 @@ public class PageReplaceNFU implements PageReplaceStrategy {
     public Page whichToThrowOut(LinkedList<Page> physMem) {
         // minmumkiválasztás a lapok counter mezője alapján
         Page min = physMem.get(0);
-        for (int i = 1; i < physMem.size(); i++) {      // elég az 1.-től indulni.
+        for (int i = 1; i < physMem.size(); i++) {      // elég az 1.-től indulni
             if (physMem.get(i).getCounter() < min.getCounter()) {
                 min = physMem.get(i);
             }
@@ -68,6 +71,23 @@ public class PageReplaceNFU implements PageReplaceStrategy {
                page.incCounter();
             }
         }
+    }
+
+
+    /** Üres konstruktor */
+    private PageReplaceNFU() {
+
+    }
+
+    /**
+     * Singleton
+     * @return példány
+     */
+    public static PageReplaceNFU getInstance() {
+        if (instance == null) {
+            instance = new PageReplaceNFU();
+        }
+        return instance;
     }
 
 }

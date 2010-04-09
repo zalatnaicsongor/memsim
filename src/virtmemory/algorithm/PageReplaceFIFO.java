@@ -12,6 +12,9 @@ import memsim_java.*;
  */
 public class PageReplaceFIFO implements PageReplaceStrategy {
 
+    /** Egyedüli példány. */
+    private static PageReplaceFIFO instance = null;
+
     /**
      * Visszadja melyik lapot kell kidobni.
      * @param physMem A lapkeretek láncolt listája.
@@ -22,10 +25,6 @@ public class PageReplaceFIFO implements PageReplaceStrategy {
     }
 
 
-    /*
-     * FIXME: nemtudom ezeket implementálni kell-e, a readByte/writeByte miatt?
-     * de biztos, hogy nem kell csinálniuk semmit.
-     */
     public void doTheAccountingOnRead(Page used, LinkedList<Page> physMem) {
 
     }
@@ -36,6 +35,23 @@ public class PageReplaceFIFO implements PageReplaceStrategy {
 
     public void doTheAccountingOnPageReplace(LinkedList<Page> physMem) {
 
+    }
+
+
+    /** Üres konstruktor */
+    private PageReplaceFIFO() {
+
+    }
+
+    /**
+     * Singleton
+     * @return
+     */
+    public static PageReplaceFIFO getInstance() {
+        if (instance == null) {
+            instance = new PageReplaceFIFO();
+        }
+        return instance;
     }
 
 }
