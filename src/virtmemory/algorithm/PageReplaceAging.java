@@ -6,8 +6,8 @@ import memsim_java.*;
 /**
  * NFU lapcserélő algolritmus.
  *   Mint az NFU, de:
- *   Először a számlálót 1 bittel jobbra toljuk, majd R-t nem a bal,
- *   hanem a jobboldali bithez adjuk hozzá.
+ *   Először a számlálót 1 bittel jobbra toljuk, majd R-t nem a jobb,
+ *   hanem a baloldali bithez adjuk hozzá.
  *
  * @author Kádár István
  */
@@ -53,7 +53,7 @@ public class PageReplaceAging implements PageReplaceStrategy, PageReplaceAccount
      * Adminisztratív tevékenységek lapcserénél.
      * @param physMem A lapkeretek láncolt listája.
      *
-     * Minden lap számlálóját 1-gyel jobbra toljuk és Ref-et a jobboldali
+     * Minden lap számlálóját 1-gyel jobbra toljuk és Ref-et a baloldali
      * bithez adjuk.
      *
      * Tannenbaum könyvében úgy szerepel, hogy ez az esemény minden óra-
@@ -69,6 +69,7 @@ public class PageReplaceAging implements PageReplaceStrategy, PageReplaceAccount
             if (physMem.get(i).getRef()) {
                 counter ^= 1 << 62;
             }
+            physMem.get(i).setCounter(counter);
         }
     }
 
