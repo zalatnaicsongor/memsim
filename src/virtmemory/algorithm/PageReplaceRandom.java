@@ -9,7 +9,7 @@ import memsim_java.*;
  *
  * @author Kádár István
  */
-public class PageReplaceRandom implements PageReplaceStrategy, PageReplaceAccountingStrategy {
+public class PageReplaceRandom implements PageReplaceStrategy {
     
     /**
      * Visszadja melyik lapot kell kidobni.

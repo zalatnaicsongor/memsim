@@ -12,7 +12,7 @@ import memsim_java.*;
  *
  * @author Kádár István
  */
-public class PageReplaceNFU implements PageReplaceStrategy, PageReplaceAccountingStrategy {
+public class PageReplaceNFU implements PageReplaceStrategy {
 
     /**
      * Visszadja melyik lapot kell kidobni.

@@ -17,7 +17,7 @@ import memsim_java.*;
  *
  * @author Kádár István
  */
-public class PageReplaceNRU implements PageReplaceStrategy, PageReplaceAccountingStrategy {
+public class PageReplaceNRU implements PageReplaceStrategy {
 
     /**
      * 4 ArrayList a 4 osztálynak megfelelőem.

@@ -67,8 +67,7 @@ public class Memory {
      */
     private VirtMemory virtMem;
 
-    // FIXME: ezek szerintem mehetnének a VirtMemory osztályba inkább
-    public PageReplaceAccountingStrategy pageAccounter;
+    // FIXME: ez szerintem mehetne a VirtMemory osztályba inkább
     public PageReplaceStrategy pageReplacer;
 
 	/**
@@ -127,7 +126,7 @@ public class Memory {
             //Ha már van hely, akkor jöhet az új lap, a pageNumber-adik
             virtMem.loadPageIntoMemory(pageNumber);
             //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
-            pageAccounter.doTheAccountingOnPageReplace(pageFrames);
+            pageReplacer.doTheAccountingOnPageReplace(pageFrames);
 
             Main.virtualUsed++;
             readByte(address); //rekurzívan hívom újra, itt már nem lesz fault
@@ -136,27 +135,12 @@ public class Memory {
         Main.memoryUsed++;
 
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most OLVASTUK
-        pageAccounter.doTheAccountingOnRead(hereItIs, pageFrames);
+        pageReplacer.doTheAccountingOnRead(hereItIs, pageFrames);
 		return hereItIs.readByte(physicalAddress);
 	
     }
 
     public void writeByte(int address, int data) {
-        //this.data.add(address, data);
-        //ITT HIBA VAN
-        //de most itt hagyom, mert nemtom, hogy ha írni akarok és nincs bent
-        //akkor is be kell e hozni, vagy hogy
-        // de ha igen, akkor u.a., mint a read...
-        /*
-         * igen, akkor is be kell.
-         */
-
-        //nézd át, hogy jó e a logika, de ez csak kopi-pészt szerintem.
-        /*
-         * Szerintem is jónak kéne lennie. :)
-         */
-
-
         int pageNumber = address >>> PHYSADDRESSLENGTH; //felső bites lapcím
 		int mask = (~0) >>> (ADDRESSLENGTH - PHYSADDRESSLENGTH);
 		int physicalAddress = address & mask; //fizikai cím
@@ -174,7 +158,7 @@ public class Memory {
             //Ha van hely, akkor jöhet az új lap
             virtMem.loadPageIntoMemory(pageNumber);
             //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
-            pageAccounter.doTheAccountingOnPageReplace(pageFrames);
+            pageReplacer.doTheAccountingOnPageReplace(pageFrames);
 
             Main.virtualUsed++;
             writeByte(address, data); //rekurzívan hívom újra, itt már nem lesz fault
@@ -183,7 +167,7 @@ public class Memory {
         Main.memoryUsed++;      // írni nemugyanaz mint olvasni, szerintem ezt lehetne külön számolni
 
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most ÍRTUK
-        pageAccounter.doTheAccountingOnWrite(hereItIs, pageFrames);
+        pageReplacer.doTheAccountingOnWrite(hereItIs, pageFrames);
 		hereItIs.writeByte(physicalAddress, data);
     }
 

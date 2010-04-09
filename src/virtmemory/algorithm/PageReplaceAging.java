@@ -11,7 +11,7 @@ import memsim_java.*;
  *
  * @author Kádár István
  */
-public class PageReplaceAging implements PageReplaceStrategy, PageReplaceAccountingStrategy {
+public class PageReplaceAging implements PageReplaceStrategy {
 
     /**
      * Visszadja melyik lapot kell kidobni.

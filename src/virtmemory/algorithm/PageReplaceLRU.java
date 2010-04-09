@@ -11,7 +11,7 @@ import memsim_java.*;
  *
  * @author Kádár István
  */
-public class PageReplaceLRU implements PageReplaceStrategy, PageReplaceAccountingStrategy {
+public class PageReplaceLRU implements PageReplaceStrategy {
 
     /**
      * Visszadja melyik lapot kell kidobni.
