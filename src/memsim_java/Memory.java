@@ -28,18 +28,18 @@ public class Memory {
 
     /**
      * A lapméret bájtokban.
-     * A lapméret legyen egyenlőre 4 KB-os. Ekkor a virtuális cimtarto-
-     * mány 16 lapból, a fizikai pedig 4 lapból áll.
+     * A lapméret legyen 4 KB-os. Ekkor a virtuális memória
+     * 16 lapból, a fizikai pedig 4 lapból áll.
      */
     public static final int PAGESIZE = 4096;
-     /* Néhány lehetőség ha lapmérettel akarunk variálni (16 bites
-      * cimtartomány esetén):
-      *      16 KB   4 lap
-      *      4 KB    16 lap
-      *      2 KB    32 lap
-      *      512 B   128 lap
-      *      256 B   256 lap
-      */
+    /* Néhány lehetőség ha lapmérettel akarunk variálni (16 bites
+     * cimtartomány esetén):
+     *      16 KB   4 lap
+     *      4 KB    16 lap
+     *      2 KB    32 lap
+     *      512 B   128 lap
+     *      256 B   256 lap
+     */
 
    /**
      * A lapkeretek száma.
@@ -54,11 +54,6 @@ public class Memory {
      */
     private LinkedList<Page> pageFrames;
     
-    // FIXME
-    private ArrayList<Integer> data;
-
-
-
     private static Memory instance;
     public ArrayList<Pointer> pointers = new ArrayList<Pointer>();
 
@@ -66,9 +61,6 @@ public class Memory {
      * A memory objecthez tartozó virtuális memória object.
      */
     private VirtMemory virtMem;
-
-    // FIXME: ez szerintem mehetne a VirtMemory osztályba inkább
-    public PageReplaceStrategy pageReplacer;
 
 	/**
 	 * Végignézi a fizikai memóriában lévő lapokat.
@@ -119,14 +111,14 @@ public class Memory {
 
             if (pageFrames.size() == NUMBEROFPAGEFRAMES) {  // akkor lapcsere
                 // amelyik lapot kidobjuk
-			    Page out = pageReplacer.whichToThrowOut(pageFrames);
+			    Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
                 // kidobjuk
                 virtMem.throwOutPage(out);
             }
             //Ha már van hely, akkor jöhet az új lap, a pageNumber-adik
             virtMem.loadPageIntoMemory(pageNumber);
             //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
-            pageReplacer.doTheAccountingOnPageReplace(pageFrames);
+            virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
 
             Main.virtualUsed++;
             readByte(address); //rekurzívan hívom újra, itt már nem lesz fault
@@ -135,7 +127,7 @@ public class Memory {
         Main.memoryUsed++;
 
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most OLVASTUK
-        pageReplacer.doTheAccountingOnRead(hereItIs, pageFrames);
+        virtMem.getPageReplacer().doTheAccountingOnRead(hereItIs, pageFrames);
 		return hereItIs.readByte(physicalAddress);
 	
     }
@@ -150,7 +142,7 @@ public class Memory {
 			hereItIs = getPageFromPhysicalMemory(pageNumber);
 		} catch (PageFaultException pf) {
             if (pageFrames.size() == NUMBEROFPAGEFRAMES) {
-			    Page out = pageReplacer.whichToThrowOut(pageFrames);
+			    Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
                 //ha megvan, akkor valahogy kidobni
                 //lehet hogy ez is alg.függő, és akkor nem itt kellene hogy legyen
                 virtMem.throwOutPage(out);
@@ -158,16 +150,16 @@ public class Memory {
             //Ha van hely, akkor jöhet az új lap
             virtMem.loadPageIntoMemory(pageNumber);
             //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
-            pageReplacer.doTheAccountingOnPageReplace(pageFrames);
+            virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
 
             Main.virtualUsed++;
             writeByte(address, data); //rekurzívan hívom újra, itt már nem lesz fault
 		}
         
-        Main.memoryUsed++;      // írni nemugyanaz mint olvasni, szerintem ezt lehetne külön számolni
+        Main.memoryUsed++;      // TODO: írni nemugyanaz mint olvasni, szerintem ezt lehetne külön számolni
 
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most ÍRTUK
-        pageReplacer.doTheAccountingOnWrite(hereItIs, pageFrames);
+        virtMem.getPageReplacer().doTheAccountingOnWrite(hereItIs, pageFrames);
 		hereItIs.writeByte(physicalAddress, data);
     }
 
@@ -235,13 +227,6 @@ public class Memory {
 
         // a lapkeretek létrehozása, kezdetben nincsenek bennt lapok
         pageFrames = new LinkedList<Page>();
-
-//****
-        this.data = new ArrayList<Integer>();
-        for (int i = 0; i < SIZE; i++) {
-            data.add(0); // inicializáljuk a memóriát!
-        }
-//****
 
         this.freeSpace = SIZE;
     }

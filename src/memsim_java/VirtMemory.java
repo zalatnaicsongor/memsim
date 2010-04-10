@@ -1,6 +1,8 @@
 package memsim_java;
 
 import java.util.*;
+import virtmemory.algorithm.*;
+
 
 /**
  * Virtuális memória osztály.
@@ -23,6 +25,12 @@ public class VirtMemory {
      * A lapok, mint a virtuális memória egységei.
      */
     public ArrayList<Page> pages;
+
+    /**
+     * A lepcserélő, ami megmondja, hogy melyik algoritmus alapján
+     * történjen a lapcsere.
+     */
+    private PageReplaceStrategy pageReplacer = PageReplaceFIFO.getInstance();
 
     /**
      * A lapkeretek láncolt listája a Memory-ból, a fizikai
@@ -108,11 +116,19 @@ public class VirtMemory {
         return pages;
     }
 
+    public PageReplaceStrategy getPageReplacer() {
+        return pageReplacer;
+    }
+
 
     // Setterek
 
     public void setPages(ArrayList<Page> pages) {
         this.pages = pages;
+    }
+
+    public void setPageReplacer(PageReplaceStrategy pageReplacer) {
+        this.pageReplacer = pageReplacer;
     }
 
 }

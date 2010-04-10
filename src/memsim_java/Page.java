@@ -9,6 +9,11 @@ package memsim_java;
 public class Page {
 
     /**
+     * A lap mérete bájtokban
+     */
+    private final int SIZE = Memory.PAGESIZE;
+
+    /**
      * Dirty bit.
      * Ha a lapon modosítás történt, értéke true.
      */
@@ -48,6 +53,7 @@ public class Page {
      */
     private long counter;
 
+
     /**
      * Konstruktor
      * @param number A lapsorszám.
@@ -56,7 +62,9 @@ public class Page {
         dirty = false;
         isInMemory = false;                         // kezdetben egyetlen lap sincs a memóriában
         pageNumber = number;
-        data = new int[Memory.PAGESIZE];            // lapméretű adatterület
+        data = new int[SIZE];                       // lapméretű adatterület
+        for (int i = 0; i < SIZE; i++) data[i] = 0; // inicializáljuk
+
         ref = false;
         counter = 0;
     }
@@ -96,6 +104,7 @@ public class Page {
         return pageNumber == page.getPageNumber();
     }
 
+    
     // Getterek
 
     public boolean getDirty() {
