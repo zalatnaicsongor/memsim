@@ -101,29 +101,37 @@ public class Memory {
 
 
     public int readByte(int address) {
+        boolean back;
+
         int pageNumber = address >>> PHYSADDRESSLENGTH; //felső bites lapcím
 		int mask = (~0) >>> (ADDRESSLENGTH - PHYSADDRESSLENGTH);
 		int physicalAddress = address & mask; //fizikai cím
 		Page hereItIs = null;
-		try {
-            //ha bennvan, akkor béke, ha nem, akkor hibát dob
-			hereItIs = getPageFromPhysicalMemory(pageNumber);
-		} catch (PageFaultException pf) {
+        do {
+            back = false;
+            try {
+                //ha bennvan, akkor béke, ha nem, akkor hibát dob
+                hereItIs = getPageFromPhysicalMemory(pageNumber);
+            } catch (PageFaultException pf) {
 
-            if (pageFrames.size() == NUMBEROFPAGEFRAMES) {  // akkor lapcsere
-                // amelyik lapot kidobjuk
-			    Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
-                // kidobjuk
-                virtMem.throwOutPage(out);
+                if (pageFrames.size() == NUMBEROFPAGEFRAMES) {  // akkor lapcsere
+                    // amelyik lapot kidobjuk
+                    Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
+                    // kidobjuk
+                    virtMem.throwOutPage(out);
+                }
+                //Ha már van hely, akkor jöhet az új lap, a pageNumber-adik
+                virtMem.loadPageIntoMemory(pageNumber);
+                //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
+                virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
+
+                back = true;
+                Main.virtualUsed++;
+
+                //readByte(address); //rekurzívan hívom újra, itt már nem lesz fault
+                
             }
-            //Ha már van hely, akkor jöhet az új lap, a pageNumber-adik
-            virtMem.loadPageIntoMemory(pageNumber);
-            //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
-            virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
-
-            Main.virtualUsed++;
-            readByte(address); //rekurzívan hívom újra, itt már nem lesz fault
-		}
+        } while (back);
         
         Main.memoryUsed++;
 

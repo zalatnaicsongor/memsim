@@ -33,13 +33,6 @@ public class VirtMemory {
     private PageReplaceStrategy pageReplacer = PageReplaceFIFO.getInstance();
 
     /**
-     * A lapkeretek láncolt listája a Memory-ból, a fizikai
-     * memória.
-     */
-    private LinkedList<Page> physMem = Memory.getInstance().getPageFrames();
-
-
-    /**
      * Konstruktor, amely a lapokat létrehozza és inicializájla.
      */
     protected VirtMemory() {
@@ -59,7 +52,8 @@ public class VirtMemory {
         if (out.getDirty()) {
             pages.set(out.getPageNumber(), out);        // ha modosított, visszaírjuk a helyére
         }
-        physMem.remove(out);                            // törlés a memóriából
+        Memory.getInstance().getPageFrames()
+                .remove(out);                           // törlés a memóriából
     }
 
     /**
@@ -68,12 +62,17 @@ public class VirtMemory {
      */
     public void loadPageIntoMemory(int pageNumber) {
         // a betöltendő lap kiválasztása pageNumber alapján
-        Page toLoad = pages.get(pages.indexOf(new Page(pageNumber)));
-
+        //Page toLoad = pages.get(pages.indexOf(new Page(pageNumber)));
+        System.out.println("*****************************************");
+        System.out.println(pages.indexOf(new Page(pageNumber)));
+        System.out.println(pageNumber);
+        System.out.println("*****************************************");
+        Page toLoad = pages.get(pageNumber);
         toLoad.setDirty(false);
         toLoad.setRef(true);                            // a lapra hivatkoztak, ezért is töltjük be
         toLoad.setIsInMemory(true);
-        physMem.add(toLoad);                            // a lapkeretek végéhez fűzzük
+        Memory.getInstance().getPageFrames()
+                .add(toLoad);                           // a lapkeretek végéhez fűzzük
     }
 
 
