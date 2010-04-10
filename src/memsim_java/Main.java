@@ -20,6 +20,10 @@ public class Main {
     public static int memoryUsed = 0;
     public static int virtualUsed = 0;
 
+    //ennyiszer történt hiba
+    public static int cacheFault = 0;
+    public static int pageFault = 0;
+
     /**
      * @param args the command line arguments
      */
