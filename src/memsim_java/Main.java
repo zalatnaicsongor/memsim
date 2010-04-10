@@ -52,6 +52,9 @@ public class Main {
         Pointer ptr5 = null;
         Pointer ptr6 = null;
         Pointer ptr7 = null;
+
+        memoria.readByte(8197);
+
         try {
             ptr1 = Memory.getInstance().allocPointer(5);
             ptr2 = Memory.getInstance().allocPointer(1);

@@ -61,13 +61,9 @@ public class VirtMemory {
      * @param pageNumber A betöltendő lap sorszáma, azonosítószáma.
      */
     public void loadPageIntoMemory(int pageNumber) {
-        // a betöltendő lap kiválasztása pageNumber alapján
-        //Page toLoad = pages.get(pages.indexOf(new Page(pageNumber)));
-        System.out.println("*****************************************");
-        System.out.println(pages.indexOf(new Page(pageNumber)));
-        System.out.println(pageNumber);
-        System.out.println("*****************************************");
-        Page toLoad = pages.get(pageNumber);
+        // a betöltendő lap kiválasztása pageNumber alapján, elveben pages.get(pagenumber) is elég lenne
+        Page toLoad = pages.get(pages.indexOf(new Page(pageNumber)));
+
         toLoad.setDirty(false);
         toLoad.setRef(true);                            // a lapra hivatkoztak, ezért is töltjük be
         toLoad.setIsInMemory(true);

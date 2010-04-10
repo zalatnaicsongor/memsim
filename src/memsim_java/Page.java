@@ -100,10 +100,14 @@ public class Page {
      * @param page A hasonlító lap.
      * @return true ha megegyeznek.
      */
-    public boolean equals(Page page) {
-        return pageNumber == page.getPageNumber();
+    public boolean equals(Object page) {
+        return this.pageNumber == ((Page)page).getPageNumber();
     }
 
+    /** A lap szöveges reprezentációja. */
+    public String toString() {
+        return "Page: " + pageNumber;
+    }
     
     // Getterek
 

@@ -101,17 +101,23 @@ public class Memory {
 
 
     public int readByte(int address) {
-        boolean back;
+        boolean back = true;
+        /*
+         * Ez a rész bugzik:
+         *
+         * int pageNumber = address >>> PHYSADDRESSLENGTH; //felső bites lapcím
+		 * int mask = (~0) >>> (ADDRESSLENGTH - PHYSADDRESSLENGTH);
+		 * int physicalAddress = address & mask; //fizikai cím
+         */
+        int pageNumber = address / PAGESIZE;            // melyik lapon van a cím
+        int physicalAddress = address % PAGESIZE;       // a lapon hol
 
-        int pageNumber = address >>> PHYSADDRESSLENGTH; //felső bites lapcím
-		int mask = (~0) >>> (ADDRESSLENGTH - PHYSADDRESSLENGTH);
-		int physicalAddress = address & mask; //fizikai cím
 		Page hereItIs = null;
         do {
-            back = false;
             try {
                 //ha bennvan, akkor béke, ha nem, akkor hibát dob
                 hereItIs = getPageFromPhysicalMemory(pageNumber);
+                back = false;
             } catch (PageFaultException pf) {
 
                 if (pageFrames.size() == NUMBEROFPAGEFRAMES) {  // akkor lapcsere
@@ -125,7 +131,6 @@ public class Memory {
                 //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
                 virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
 
-                back = true;
                 Main.virtualUsed++;
 
                 //readByte(address); //rekurzívan hívom újra, itt már nem lesz fault
@@ -142,29 +147,39 @@ public class Memory {
     }
 
     public void writeByte(int address, int data) {
-        int pageNumber = address >>> PHYSADDRESSLENGTH; //felső bites lapcím
-		int mask = (~0) >>> (ADDRESSLENGTH - PHYSADDRESSLENGTH);
-		int physicalAddress = address & mask; //fizikai cím
-		Page hereItIs = null;
-		try {
-            //ha bennvan, akkor béke, ha nem, akkor hibát dob
-			hereItIs = getPageFromPhysicalMemory(pageNumber);
-		} catch (PageFaultException pf) {
-            if (pageFrames.size() == NUMBEROFPAGEFRAMES) {
-			    Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
-                //ha megvan, akkor valahogy kidobni
-                //lehet hogy ez is alg.függő, és akkor nem itt kellene hogy legyen
-                virtMem.throwOutPage(out);
-            }
-            //Ha van hely, akkor jöhet az új lap
-            virtMem.loadPageIntoMemory(pageNumber);
-            //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
-            virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
+        boolean back = true;
+        /*
+         * Ez a rész bugzik:
+         *
+         * int pageNumber = address >>> PHYSADDRESSLENGTH; //felső bites lapcím
+		 * int mask = (~0) >>> (ADDRESSLENGTH - PHYSADDRESSLENGTH);
+		 * int physicalAddress = address & mask; //fizikai cím
+         */
+        int pageNumber = address / PAGESIZE;            // melyik lapon van a cím
+        int physicalAddress = address % PAGESIZE;       // a lapon hol
 
-            Main.virtualUsed++;
-            writeByte(address, data); //rekurzívan hívom újra, itt már nem lesz fault
-		}
-        
+		Page hereItIs = null;
+        do {
+            try {
+                //ha bennvan, akkor béke, ha nem, akkor hibát dob
+                hereItIs = getPageFromPhysicalMemory(pageNumber);
+                back = false;
+            } catch (PageFaultException pf) {
+                if (pageFrames.size() == NUMBEROFPAGEFRAMES) {
+                    Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
+                    //ha megvan, akkor valahogy kidobni
+                    //lehet hogy ez is alg.függő, és akkor nem itt kellene hogy legyen
+                    virtMem.throwOutPage(out);
+                }
+                //Ha van hely, akkor jöhet az új lap
+                virtMem.loadPageIntoMemory(pageNumber);
+                //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
+                virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
+
+                Main.virtualUsed++;
+                // writeByte(address, data); //rekurzívan hívom újra, itt már nem lesz fault
+            }
+        } while (back);
         Main.memoryUsed++;      // TODO: írni nemugyanaz mint olvasni, szerintem ezt lehetne külön számolni
 
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most ÍRTUK
