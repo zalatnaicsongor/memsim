@@ -32,7 +32,8 @@ public class Memory {
      * 16 lapból, a fizikai pedig 4 lapból áll.
      */
     public static final int PAGESIZE = 4096;
-    /* Néhány lehetőség ha lapmérettel akarunk variálni (16 bites
+    /*
+     * Néhány lehetőség ha lapmérettel akarunk variálni (16 bites
      * cimtartomány esetén):
      *      16 KB   4 lap
      *      4 KB    16 lap
