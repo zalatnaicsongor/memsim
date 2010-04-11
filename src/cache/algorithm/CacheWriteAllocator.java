@@ -38,6 +38,7 @@ public class CacheWriteAllocator implements CacheWriteStrategy {
         try {
             row = Cache.getInstance().getLine(line).getRowByTag(tag);
         } catch (CacheRowNotFoundException e) {
+            Main.stats.addCacheFault(); //inkrementáljuk a cachefault változót
             row = Cache.getInstance().getLine(line).createRow(tag);
             System.out.println("Adott cím nem volt cache-ben");
         }
