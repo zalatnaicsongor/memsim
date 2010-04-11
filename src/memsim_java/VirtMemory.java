@@ -30,7 +30,7 @@ public class VirtMemory {
      * A lepcserélő, ami megmondja, hogy melyik algoritmus alapján
      * történjen a lapcsere.
      */
-    private PageReplaceStrategy pageReplacer = PageReplaceFIFO.getInstance();
+    private PageReplaceStrategy pageReplacer = PageReplaceLRU.getInstance();
 
     /**
      * Konstruktor, amely a lapokat létrehozza és inicializájla.
@@ -54,6 +54,8 @@ public class VirtMemory {
         }
         Memory.getInstance().getPageFrames()
                 .remove(out);                           // törlés a memóriából
+        System.out.println(out.getPageNumber() + " számú lap kidobva...");
+        Memory.getInstance().__dumpPages();
     }
 
     /**
@@ -67,8 +69,9 @@ public class VirtMemory {
         toLoad.setDirty(false);
         toLoad.setRef(true);                            // a lapra hivatkoztak, ezért is töltjük be
         toLoad.setIsInMemory(true);
-        Memory.getInstance().getPageFrames()
-                .add(toLoad);                           // a lapkeretek végéhez fűzzük
+        Memory.getInstance().getPageFrames().addLast(toLoad);  // a lapkeretek végéhez fűzzük
+        System.out.println(toLoad.getPageNumber() + " számú lap betöltve...");
+        Memory.getInstance().__dumpPages();
     }
 
 

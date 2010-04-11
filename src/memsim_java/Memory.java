@@ -96,9 +96,18 @@ public class Memory {
             kezdocim = ptr.getAddress() + ptr.getSizeInBytes();
         }
         System.out.println("Kompaktáltam");
+        Main.stats.addCompact();
         this.updateContFreeSpace();
     }
 
+
+    public void __dumpPages() {
+        ListIterator<Page> it = pageFrames.listIterator();
+        while (it.hasNext()) {
+            System.out.print(it.next().getPageNumber() + ", ");
+        }
+        System.out.println("");
+    }
 
     public int readByte(int address) {
         boolean back = true;
@@ -108,6 +117,11 @@ public class Memory {
          * int pageNumber = address >>> PHYSADDRESSLENGTH; //felső bites lapcím
 		 * int mask = (~0) >>> (ADDRESSLENGTH - PHYSADDRESSLENGTH);
 		 * int physicalAddress = address & mask; //fizikai cím
+         *
+         * vágom már hogy itt mi volt a baj
+         * PHYADDRESSLENGTH helyett logketto(PAGESIZE) kellene
+         * de így is jó, ahogy van :)
+         *
          */
         int pageNumber = address / PAGESIZE;            // melyik lapon van a cím
         int physicalAddress = address % PAGESIZE;       // a lapon hol
@@ -119,7 +133,6 @@ public class Memory {
                 hereItIs = getPageFromPhysicalMemory(pageNumber);
                 back = false;
             } catch (PageFaultException pf) {
-
                 if (pageFrames.size() == NUMBEROFPAGEFRAMES) {  // akkor lapcsere
                     // amelyik lapot kidobjuk
                     Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
@@ -131,14 +144,14 @@ public class Memory {
                 //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
                 virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
 
-                Main.virtualUsed++;
+                Main.stats.useVirtual();
 
                 //readByte(address); //rekurzívan hívom újra, itt már nem lesz fault
                 
             }
         } while (back);
         
-        Main.memoryUsed++;
+        Main.stats.useMemory("read");
 
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most OLVASTUK
         virtMem.getPageReplacer().doTheAccountingOnRead(hereItIs, pageFrames);
@@ -176,11 +189,11 @@ public class Memory {
                 //az alg.-nak megfelelő módon lekönyveljük, hogy LAPCSERE TÖRTÉNT
                 virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
 
-                Main.virtualUsed++;
+                Main.stats.useVirtual();
                 // writeByte(address, data); //rekurzívan hívom újra, itt már nem lesz fault
             }
         } while (back);
-        Main.memoryUsed++;      // TODO: írni nemugyanaz mint olvasni, szerintem ezt lehetne külön számolni
+        Main.stats.useMemory("write");      // TODO: írni nemugyanaz mint olvasni, szerintem ezt lehetne külön számolni
 
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most ÍRTUK
         virtMem.getPageReplacer().doTheAccountingOnWrite(hereItIs, pageFrames);

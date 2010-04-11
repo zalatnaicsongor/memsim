@@ -10,19 +10,8 @@ import cache.algorithm.*;
  */
 public class Main {
 
-    //ennyi ideig tart hozzájuk fordulni
-    public static final int cacheTime = 1;
-    public static final int memoryTime = 10;
-    public static final int virtualTime = 100;
+    public static Statistics stats = Statistics.getInstance();
 
-    //ennyiszer fordultunk hozzájuk ebben a futásban
-    public static int cacheUsed = 0;
-    public static int memoryUsed = 0;
-    public static int virtualUsed = 0;
-
-    //ennyiszer történt hiba
-    public static int cacheFault = 0;
-    public static int pageFault = 0;
 
     /**
      * @param args the command line arguments
@@ -53,8 +42,20 @@ public class Main {
         Pointer ptr6 = null;
         Pointer ptr7 = null;
 
-        memoria.readByte(8197);
+        memoria.readByte(4000);
+        memoria.readByte(8000);
+        memoria.readByte(12000);
+        memoria.readByte(16000);
+        memoria.readByte(4000);
+        memoria.readByte(8000);
+        memoria.readByte(20000);
+        memoria.readByte(16000);
+        memoria.readByte(12000);
+        memoria.readByte(4000);
 
+
+
+        System.out.println("tárááá-----");
         try {
             ptr1 = Memory.getInstance().allocPointer(5);
             ptr2 = Memory.getInstance().allocPointer(1);
@@ -77,5 +78,7 @@ public class Main {
         } catch (PointerOutOfRangeException e) {
             System.out.println(e);
         }
+        stats.exportCSV();
+        System.exit(0);
     }
 }

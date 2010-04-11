@@ -119,11 +119,11 @@ public class Cache {
             System.out.println(e);
             row = Cache.getInstance().getLine(line).createRow(tag);
         }
-        Main.cacheUsed++;
+        Main.stats.useCache();
         return row.readByte(displacement);
     }
     public void writeByte(int address, int data) {
-        Main.cacheUsed++;
+        Main.stats.useCache();
         this.getWriteStrategy().writeByte(address, data);
     }
 
