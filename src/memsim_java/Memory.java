@@ -255,6 +255,7 @@ public class Memory {
         this.freeSpace = SIZE;
     }
 
+    
     public Pointer getPointer(int address) {
         for (Pointer ptr : this.pointers) {
             if (ptr.getAddress() == address) {
@@ -263,7 +264,6 @@ public class Memory {
         }
         return null;
     }
-
 
     public void setMaxContFreeSpace(int maxContFreeSpace) {
         this.maxContFreeSpace = maxContFreeSpace;

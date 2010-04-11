@@ -58,6 +58,7 @@ public class PageReplaceNRU implements PageReplaceStrategy {
     public Page whichToThrowOut(LinkedList<Page> physMem) {
         int rand;                                       // véletlen szám
 
+        assort(physMem);                                // szétválogatjuk a lapokat
         if (! notRefNotDirty.isEmpty()) {               // ha nem üres
             rand = (int)(Math.random() * notRefNotDirty.size());
             return notRefNotDirty.get(rand);
