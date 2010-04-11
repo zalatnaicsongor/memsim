@@ -117,6 +117,7 @@ public class Cache {
             row = Cache.getInstance().getLine(line).getRowByTag(tag);
         } catch (CacheRowNotFoundException e) {
             System.out.println(e);
+            Main.stats.addCacheFault(); //inkrementáljuk a cachefault változót
             row = Cache.getInstance().getLine(line).createRow(tag);
         }
         Main.stats.useCache();
