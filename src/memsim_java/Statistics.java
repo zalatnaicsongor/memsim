@@ -80,7 +80,7 @@ public class Statistics {
         double b = 1 - (this.cacheFault / this.cacheUsed);
         double c = 1 - (this.pageFault / (this.memoryUsedRead + this.memoryUsedWrite));
         String answer =  "CacheUse," + this.cacheUsed + "\n" +
-              "CacheTime," + this.cacheUsed * Statistics.cacheTime + "\n" +
+              "CacheTime" + this.cacheUsed * Statistics.cacheTime + "\n" +
               "MemUseRead," + this.memoryUsedRead + "\n" +
               "MemUseWrite," + this.memoryUsedWrite + "\n" +
               "MemTime," + a + "\n" +
