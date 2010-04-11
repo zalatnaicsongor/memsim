@@ -32,12 +32,7 @@ public class PageReplaceLRU implements PageReplaceStrategy {
      * @param physMem A lapkeretek láncolt listája.
      */
     public void doTheAccountingOnRead(Page used, LinkedList<Page> physMem) {
-        for (Page p : physMem) {
-            if (p == used) {
-                physMem.remove(p);
-                break;
-            }
-        }
+        physMem.remove(used);
         physMem.addLast(used);
     }
 
@@ -47,12 +42,7 @@ public class PageReplaceLRU implements PageReplaceStrategy {
      * @param physMem A lapkeretek láncolt listája.
      */
     public void doTheAccountingOnWrite(Page used, LinkedList<Page> physMem) {
-        for (Page p : physMem) {
-            if (p == used) {
-                physMem.remove(p);
-                break;
-            }
-        }
+        physMem.remove(used);
         physMem.addLast(used);
     }
 
