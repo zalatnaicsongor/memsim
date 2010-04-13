@@ -104,9 +104,15 @@ public class Page {
         return this.pageNumber == ((Page)page).getPageNumber();
     }
 
-    /** A lap szöveges reprezentációja. */
+    /** A lap szöveges reprezentációja.
+     * @return 
+     */
+    @Override
     public String toString() {
-        return "Page: " + pageNumber;
+        return "--==(" + pageNumber + ")"
+                + " R:" + ((ref) ? "1" : "0")
+                + " Count:" + counter
+                + "==--";
     }
     
     // Getterek

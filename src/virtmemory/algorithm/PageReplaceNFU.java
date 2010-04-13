@@ -57,7 +57,7 @@ public class PageReplaceNFU implements PageReplaceStrategy {
      * Adminisztratív tevékenységek lapcserénél.
      * @param physMem A lapkeretek láncolt listája.
      *
-     * Minden lap Ref bitjét hozzáadjuk a számlálójához.
+     * Minden lap Ref bitjét hozzáadjuk a számlálójához, majd töröljük az R bitet.
      * Tannenbaum könyvében úgy szerepel, hogy ez az esemény minden óra-
      * megszakításnál következik be. Knapp G. - Adamis G. Operációs rend-
      * szerek c. könyve szerint azonban lapcserekor történik a számláló modo-
@@ -67,8 +67,9 @@ public class PageReplaceNFU implements PageReplaceStrategy {
         Page page;
         for (int i = 0; i < physMem.size(); i++) {
             page = physMem.get(i);
-            if (page.getRef()) {
+            if (page.getRef()) {                        // R bit hozzáadása a számlálóhoz
                page.incCounter();
+               page.setRef(false);                      // R bit törlése
             }
         }
     }

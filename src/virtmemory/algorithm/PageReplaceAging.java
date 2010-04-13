@@ -72,6 +72,7 @@ public class PageReplaceAging implements PageReplaceStrategy {
                 counter ^= 1 << 62;
             }
             physMem.get(i).setCounter(counter);
+            physMem.get(i).setRef(false);               // R bit törlése
         }
     }
 
