@@ -18,7 +18,8 @@ public class Statistics {
     private int cacheUsed = 0;
     private int memoryUsedRead = 0;
     private int memoryUsedWrite = 0;
-    private int virtualUsed = 0;
+    private int virtualUsedRead = 0;
+    private int virtualUsedWrite = 0;
 
     //ennyiszer történt hiba
     private int cacheFault = 0;
@@ -70,29 +71,43 @@ public class Statistics {
         System.out.println("MemoryCOMPACTED");
     }
 
-    public void useVirtual() {
-        this.virtualUsed++;
-        System.out.println("VirtualUSE");
+    public void useVirtualRead() {
+        //lap ki-be == lap mérete * elérés ideje (elérési idő byteonként van számolva!!!)
+        this.virtualUsedRead += Memory.PAGESIZE;
+        // nem csak úgy bevándorol a memóriába, hanem bele is kell írni, ami IDŐ
+        this.memoryUsedWrite += Memory.PAGESIZE;
+        System.out.println("VirtualREAD");
+    }
+    public void useVirtualWrite() {
+        //lap ki-be == lap mérete * elérés ideje (elérési idő byteonként van számolva!!!)
+        this.virtualUsedWrite += Memory.PAGESIZE;
+        // a memóriából ki fogja kiolvasni a tárolóra írandó változásokat?
+        this.memoryUsedRead += Memory.PAGESIZE;
+        System.out.println("VirtualWRITE");
     }
 
-    public void exportCSV() {
+    public void exportCSV(String fileName) {
         int a = (Statistics.memoryReadTime * this.memoryUsedRead + Statistics.memoryWriteTime * this.memoryUsedWrite);
-        double b = 1 - (this.cacheFault / this.cacheUsed);
+        double b = 0.0;
+        if (this.cacheUsed != 0) {
+            b = 1 - (this.cacheFault / this.cacheUsed);
+        }
         double c = 1 - (this.pageFault / (this.memoryUsedRead + this.memoryUsedWrite));
         String answer =  "CacheUse," + this.cacheUsed + "\n" +
               "CacheTime" + this.cacheUsed * Statistics.cacheTime + "\n" +
               "MemUseRead," + this.memoryUsedRead + "\n" +
               "MemUseWrite," + this.memoryUsedWrite + "\n" +
               "MemTime," + a + "\n" +
-              "VirtUse," + this.virtualUsed + "\n" +
-              "VirtTime," + this.virtualUsed * Statistics.virtualTime + "\n" +
+              "VirtUseRead," + this.virtualUsedRead + "\n" +
+              "VirtUseWrite," + this.virtualUsedWrite + "\n" +
+              "VirtTime," + (this.virtualUsedRead + this.virtualUsedWrite) * Statistics.virtualTime + "\n" +
               "CacheFault," + this.cacheFault + "\n" +
               "PageFault," + this.pageFault + "\n" +
               "CacheFoundRatio," + b + "\n" +
-              "MemFoundRatio," + c + "\n" +
+              //"MemFoundRatio," + c + "\n" +
               "Compacts," + this.numberOfCompacts + "\n";
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter("export.csv"));
+            BufferedWriter out = new BufferedWriter(new FileWriter(fileName));
             out.write(answer);
             out.close();
         } catch (Exception e) {

@@ -96,7 +96,7 @@ public class Memory {
             kezdocim = ptr.getAddress() + ptr.getSizeInBytes();
         }
         System.out.println("Kompaktáltam");
-        Main.stats.addCompact();
+        Statistics.getInstance().addCompact();
         this.updateContFreeSpace();
     }
 
@@ -118,16 +118,21 @@ public class Memory {
                     // amelyik lapot kidobjuk
                     Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
                     // kidobjuk
+                    // HA DIRTY, AKKOR VISSZA KÉNE ÍRNI A LEMEZRE
+                    // ENNEK IDEJE: AHÁNY BYTE VAN A LAPBAN * ELÉRÉS
+                    if (out.getDirty()) {
+                        Statistics.getInstance().useVirtualWrite();
+                    }
                     virtMem.throwOutPage(out);
                 }
                 // Ha már van hely, akkor jöhet az új lap, a pageNumber-adik
                 virtMem.loadPageIntoMemory(pageNumber);
                 
-                Main.stats.useVirtual();             
+                Statistics.getInstance().useVirtualRead();
             }
         } while (back);
         
-        Main.stats.useMemory("read");
+        Statistics.getInstance().useMemory("read");
 
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most OLVASTUK
         virtMem.getPageReplacer().doTheAccountingOnRead(hereItIs, pageFrames);
@@ -151,6 +156,11 @@ public class Memory {
                 if (pageFrames.size() == NUMBEROFPAGEFRAMES) {
                     // amelyik lapot kidobjuk
                     Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
+                    // HA DIRTY, AKKOR VISSZA KÉNE ÍRNI A LEMEZRE
+                    // ENNEK IDEJE: AHÁNY BYTE VAN A LAPBAN * ELÉRÉS
+                    if (out.getDirty()) {
+                        Statistics.getInstance().useVirtualWrite();
+                    }
                     // kidobjuk
                     virtMem.throwOutPage(out);
                     // lapcsere fog töténni
@@ -163,10 +173,10 @@ public class Memory {
                     virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
                 isThereReplace = false;
 
-                Main.stats.useVirtual();
+                Statistics.getInstance().useVirtualRead();
             }
         } while (back);
-        Main.stats.useMemory("write");
+        Statistics.getInstance().useMemory("write");
 
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most ÍRTUK
         virtMem.getPageReplacer().doTheAccountingOnWrite(hereItIs, pageFrames);
@@ -237,6 +247,11 @@ public class Memory {
 
         // a lapkeretek létrehozása, kezdetben nincsenek bennt lapok
         pageFrames = new LinkedList<Page>();
+        // ELSŐ n lap betöltése memóriába, hogy az ne számítson a statisztikába!
+        // vagyis minek vegyük lemezről olvasásnak azt, ami már eleve befért a memóriába, csak kezdetkor nem töltöttük be?
+        for (int i = 0; i< Memory.NUMBEROFPAGEFRAMES; i++) {
+            pageFrames.add(virtMem.getPages().get(i));
+        }
 
         this.freeSpace = SIZE;
     }

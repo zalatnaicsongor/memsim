@@ -1,16 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package memsim_java;
 import cache.algorithm.*;
+import java.util.ArrayList;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import virtmemory.algorithm.*;
 /**
  *
  * @author zalatnaicsongor
  */
 public class Main {
-
-    public static Statistics stats = Statistics.getInstance();
 
 
     /**
@@ -25,60 +24,52 @@ public class Main {
         //ezek alapján lefut, és a végén a statisztikát adott formában file-ba írja
         //ebből egy másik osztály/program/script grafikont csinálhat...
 
+        //memória belövése
         Memory.createMemory();
-        Memory memoria = Memory.getInstance();
+        Memory memoria = Memory.getInstance(); // debugger miatt
+        VirtMemory virtMem = VirtMemory.getInstance(); //ez is debugger miatt
+        //memória belövésének vége
+        //cache belövése
         try {
             Cache.create(32, 32, 2);
         } catch (Exception e) {
             System.out.println(e);
         }
-        Cache cache = Cache.getInstance();
-        cache.setRowDiscardStrategy(CacheRowDiscardLRU.getInstance());
-        Pointer ptr1 = null;
-        Pointer ptr2 = null;
-        Pointer ptr3 = null;
-        Pointer ptr4 = null;
-        Pointer ptr5 = null;
-        Pointer ptr6 = null;
-        Pointer ptr7 = null;
+        Cache cache = Cache.getInstance(); //debugger miatt
+        //cache belövésének vége
 
-        memoria.readByte(4000);
-        memoria.readByte(8000);
-        memoria.readByte(12000);
-        memoria.readByte(16000);
-        memoria.readByte(4000);
-        memoria.readByte(8000);
-        memoria.readByte(20000);
-        memoria.readByte(16000);
-        memoria.readByte(12000);
-        memoria.readByte(4000);
+        //algoritmusok beállítása
+        Cache.getInstance().setRowDiscardStrategy(CacheRowDiscardLRU.getInstance());
+        Cache.getInstance().setWriteStrategy(CacheWriteBack.getInstance());
+        VirtMemory.getInstance().setPageReplacer(PageReplaceSecondChance.getInstance());
+        //algoritmusok beállításának vége
 
 
 
-        System.out.println("tárááá-----");
+        //segédváltozók
+        Random rand = new Random();
+        //segédváltozók vége
+
+        //nagy teszt
+        Pointer nagyP = null;
         try {
-            ptr1 = Memory.getInstance().allocPointer(5);
-            ptr2 = Memory.getInstance().allocPointer(1);
-            ptr3 = Memory.getInstance().allocPointer(1);
-            ptr4 = Memory.getInstance().allocPointer(1);
-            ptr6 = Memory.getInstance().allocPointer(2);
-            ptr5 = Memory.getInstance().allocPointer(30000);
-            ptr6 = ptr6.free();
-            ptr7 = Memory.getInstance().allocPointer(3);
-        } catch (MemorySpaceException e) {
-            System.out.println(e);
-        }
-        try {
-            ptr5.write(601, 65342);
-            ptr5.write(610, 65342);
-            ptr5.write(6010, 65342);
-            ptr5.write(8057, 65342);
-            ptr5.write(4996, 65342);
-            ptr1 = ptr1.free();
+            nagyP = Memory.getInstance().allocPointer(9000);
+            for (int i = 0; i < nagyP.getSize(); i++) {
+                nagyP.write(i, rand.nextInt(65000));
+            }
+        } catch (MemorySpaceException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         } catch (PointerOutOfRangeException e) {
             System.out.println(e);
         }
-        stats.exportCSV();
+        //nagy teszt vége
+
+
+
+        //csv exportálása
+        Statistics.getInstance().exportCSV("nagytomb.csv");
+        //kilépés
         System.exit(0);
+
     }
 }

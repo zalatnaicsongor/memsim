@@ -26,6 +26,7 @@ public class CacheRow {
     public void writeByte(int displacement, int data) {
         this.setDirty(true);
         updateUsageData();
+        Statistics.getInstance().useCache();
         this.data[displacement] = data;
     }
 

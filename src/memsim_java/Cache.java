@@ -117,14 +117,13 @@ public class Cache {
             row = Cache.getInstance().getLine(line).getRowByTag(tag);
         } catch (CacheRowNotFoundException e) {
             System.out.println(e);
-            Main.stats.addCacheFault(); //inkrementáljuk a cachefault változót
+            Statistics.getInstance().addCacheFault(); //inkrementáljuk a cachefault változót
             row = Cache.getInstance().getLine(line).createRow(tag);
         }
-        Main.stats.useCache();
+        Statistics.getInstance().useCache();
         return row.readByte(displacement);
     }
     public void writeByte(int address, int data) {
-        Main.stats.useCache();
         this.getWriteStrategy().writeByte(address, data);
     }
 
