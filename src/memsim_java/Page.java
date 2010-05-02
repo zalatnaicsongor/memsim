@@ -11,7 +11,7 @@ public class Page {
     /**
      * A lap mérete bájtokban
      */
-    private final int SIZE = Memory.PAGESIZE;
+    private final int SIZE;
 
     /**
      * Dirty bit.
@@ -58,7 +58,8 @@ public class Page {
      * Konstruktor
      * @param number A lapsorszám.
      */
-    public Page(int number) {
+    public Page(int number, int pagesize) {
+        this.SIZE = pagesize;
         dirty = false;
         isInMemory = false;                         // kezdetben egyetlen lap sincs a memóriában
         pageNumber = number;

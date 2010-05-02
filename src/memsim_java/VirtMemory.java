@@ -14,8 +14,7 @@ public class VirtMemory {
     /**
      * A lapok száma.
      */
-    public static final int NUMBEROFPAGES = Memory.SIZE / Memory.PAGESIZE;
-
+    public final int NUMBEROFPAGES;
     /**
      * Az osztály egyedüli példánya
      */
@@ -30,15 +29,19 @@ public class VirtMemory {
      * A lepcserélő, ami megmondja, hogy melyik algoritmus alapján
      * történjen a lapcsere.
      */
-    private PageReplaceStrategy pageReplacer = PageReplaceNFU.getInstance();
+    private PageReplaceStrategy pageReplacer;
 
     /**
      * Konstruktor, amely a lapokat létrehozza és inicializájla.
      */
-    protected VirtMemory() {
+    protected VirtMemory(PageReplaceStrategy prs, int pagenum, int pagesize) {
+
+        this.pageReplacer = prs;
+        this.NUMBEROFPAGES = pagenum;
+
         pages = new ArrayList<Page>(NUMBEROFPAGES);
         for (int i = 0; i < NUMBEROFPAGES; i++) {
-            pages.add(new Page(i));                     // lap létrehozása sorszámával inicializálva
+            pages.add(new Page(i, pagesize));                     // lap létrehozása sorszámával inicializálva
         }
     }
 
@@ -64,7 +67,8 @@ public class VirtMemory {
      */
     public void loadPageIntoMemory(int pageNumber) {
         // a betöltendő lap kiválasztása pageNumber alapján, elveben pages.get(pagenumber) is elég lenne
-        Page toLoad = pages.get(pages.indexOf(new Page(pageNumber)));
+        int pagesize = Memory.getInstance().PAGESIZE;
+        Page toLoad = pages.get(pages.indexOf(new Page(pageNumber, pagesize)));
         toLoad.setDirty(false);
         toLoad.setRef(true);                            // a lapra hivatkoztak, ezért is töltjük be
         toLoad.setIsInMemory(true);
@@ -79,8 +83,11 @@ public class VirtMemory {
     // Getterek
 
     public static VirtMemory getInstance() {
-        if (instance == null) instance = new VirtMemory();
-        return instance;
+        return VirtMemory.instance;
+    }
+
+    public static void createVirtMemory(PageReplaceStrategy prs, int pagenum, int pagesize) {
+        VirtMemory.instance = new VirtMemory(prs, pagenum, pagesize);
     }
 
     public ArrayList<Page> getPages() {

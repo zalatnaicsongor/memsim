@@ -13,25 +13,22 @@ public class Memory {
     /**
      * Virtuális címtartomány.
      */
-    public static final int ADDRESSLENGTH = 16;
+    public final int ADDRESSLENGTH;
     
     /**
-     * A fizikai címtartomány legyen 14 bites. A virtuális címtarto-
-     * mány negyede.
+     * A fizikai címtartomány
      */
-    public static final int PHYSADDRESSLENGTH = 14;
+    public final int PHYSADDRESSLENGTH;
 
     /**
      * Az egész memória mérete bájtokban.
      */
-    public static final int SIZE = (int) Math.pow(2, ADDRESSLENGTH);    // 65536
-
+    public final int SIZE;
+   
     /**
      * A lapméret bájtokban.
-     * A lapméret legyen 4 KB-os. Ekkor a virtuális memória
-     * 16 lapból, a fizikai pedig 4 lapból áll.
      */
-    public static final int PAGESIZE = 4096;
+    public final int PAGESIZE;
     /*
      * Néhány lehetőség ha lapmérettel akarunk variálni (16 bites
      * cimtartomány esetén):
@@ -45,7 +42,7 @@ public class Memory {
    /**
      * A lapkeretek száma.
      */
-    public static final int NUMBEROFPAGEFRAMES = (int)(Math.pow(2, PHYSADDRESSLENGTH)) / PAGESIZE;
+    public final int NUMBEROFPAGEFRAMES;
 
     private int maxContFreeSpace;
     private int freeSpace;
@@ -239,17 +236,28 @@ public class Memory {
         System.out.println("Legnagyobb szabad lyuk: " + this.getMaxContFreeSpace() + " byte");
     }
 
-    protected Memory() {
+    protected Memory(int addresslength, int physaddresslength, int pagesize, PageReplaceStrategy prs) {
+
+        this.ADDRESSLENGTH = addresslength;
+        this.PHYSADDRESSLENGTH = physaddresslength;
+        this.PAGESIZE = pagesize;
+
+        this.SIZE = (int) Math.pow(2, ADDRESSLENGTH);
+        this.NUMBEROFPAGEFRAMES = (int)(Math.pow(2, PHYSADDRESSLENGTH)) / PAGESIZE;
+
+
         this.maxContFreeSpace = SIZE;
     
         // virtuálsi memória felépitése
+        int pagenum = this.SIZE / this.PAGESIZE;
+        VirtMemory.createVirtMemory(prs, pagenum, this.PAGESIZE);
         virtMem = VirtMemory.getInstance();
 
         // a lapkeretek létrehozása, kezdetben nincsenek bennt lapok
         pageFrames = new LinkedList<Page>();
         // ELSŐ n lap betöltése memóriába, hogy az ne számítson a statisztikába!
         // vagyis minek vegyük lemezről olvasásnak azt, ami már eleve befért a memóriába, csak kezdetkor nem töltöttük be?
-        for (int i = 0; i< Memory.NUMBEROFPAGEFRAMES; i++) {
+        for (int i = 0; i< this.NUMBEROFPAGEFRAMES; i++) {
             pageFrames.add(virtMem.getPages().get(i));
         }
 
@@ -286,8 +294,8 @@ public class Memory {
         return pageFrames;
     }
 
-    public static void createMemory() {
-        Memory.instance = new Memory();
+    public static void createMemory(int addresslength, int physaddresslength, int pagesize, PageReplaceStrategy prs) {
+        Memory.instance = new Memory(addresslength, physaddresslength, pagesize, prs);
     }
 
     public static Memory getInstance() {
