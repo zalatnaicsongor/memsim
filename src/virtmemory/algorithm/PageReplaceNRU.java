@@ -25,20 +25,25 @@ public class PageReplaceNRU implements PageReplaceStrategy {
     /**
      * 4 ArrayList a 4 osztálynak megfelelőem.
      */
-    ArrayList<Page> notRefNotDirty = new ArrayList<Page>();
-    ArrayList<Page> notRefDirty = new ArrayList<Page>();
-    ArrayList<Page> refNotDirty = new ArrayList<Page>();
-    ArrayList<Page> refDirty = new ArrayList<Page>();
+    ArrayList<Page> notRefNotDirty;
+    ArrayList<Page> notRefDirty;
+    ArrayList<Page> refNotDirty;
+    ArrayList<Page> refDirty;
 
     /**
      * Minden lap besorolása valmelyik osztályba.
      * @param physMem Lapkeretek láncolt listája.
      */
     private void assort(LinkedList<Page> physMem) {
+        notRefNotDirty = new ArrayList<Page>();
+        notRefDirty = new ArrayList<Page>();
+        refNotDirty = new ArrayList<Page>();
+        refDirty = new ArrayList<Page>();
+
         Page page;                                      // segédlap
         for (int i = 0; i < physMem.size(); i++) {
             page = physMem.get(i);
-            if (!page.getRef() && !page.getRef()) {
+            if (!page.getRef() && !page.getDirty()) {
                 notRefNotDirty.add(page);               // 1. osztályhoz adjuk
             } else if (!page.getRef() && page.getDirty()) {
                 notRefDirty.add(page);                  // 2. osztályhoz
@@ -48,6 +53,12 @@ public class PageReplaceNRU implements PageReplaceStrategy {
                 refDirty.add(page);                     // 4. osztályhoz
             }
         }
+
+        System.out.println("1: " + notRefNotDirty);
+        System.out.println("2: " + notRefDirty);
+        System.out.println("3: " + refNotDirty);
+        System.out.println("4: " + refDirty);
+
     }
 
     /**

@@ -113,16 +113,16 @@ public class Memory {
                 back = false;
             } catch (PageFaultException pf) {
                 if (pageFrames.size() == NUMBEROFPAGEFRAMES) {  // akkor lapcsere
-                    // lekönyveljük, hogy lapcsere fog történni
-                    virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
                     // amelyik lapot kidobjuk
                     Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
                     // kidobjuk
                     virtMem.throwOutPage(out);
                 }
+                // lekönyveljük, hogy lapcsere történik
+                virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
                 // Ha már van hely, akkor jöhet az új lap, a pageNumber-adik
                 virtMem.loadPageIntoMemory(pageNumber);
-                
+
                 Main.stats.useVirtual();             
             }
         } while (back);
@@ -137,7 +137,6 @@ public class Memory {
 
     public void writeByte(int address, int data) {
         boolean back = true;
-        boolean isThereReplace = false;                 // kellett-e lapcsere
 
         int pageNumber = address / PAGESIZE;            // melyik lapon van a cím
         int physicalAddress = address % PAGESIZE;       // a lapon hol
@@ -153,15 +152,11 @@ public class Memory {
                     Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
                     // kidobjuk
                     virtMem.throwOutPage(out);
-                    // lapcsere fog töténni
-                    isThereReplace = true;
                 }
+                // lekönyveljük, hogy lapcsere történik
+                virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
                 // jöhet az új lap
                 virtMem.loadPageIntoMemory(pageNumber);
-                // ha lapcsere történt lekönyveljük
-                if (isThereReplace)
-                    virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
-                isThereReplace = false;
 
                 Main.stats.useVirtual();
             }

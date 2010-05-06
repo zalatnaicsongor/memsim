@@ -111,7 +111,7 @@ public class Page {
     public String toString() {
         return "--==(" + pageNumber + ")"
                 + " R:" + ((ref) ? "1" : "0")
-                + " Count:" + counter
+                + " D:" + ((dirty) ? "1" : "0")
                 + "==--";
     }
     

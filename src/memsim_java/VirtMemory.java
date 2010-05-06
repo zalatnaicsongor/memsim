@@ -30,7 +30,7 @@ public class VirtMemory {
      * A lepcserélő, ami megmondja, hogy melyik algoritmus alapján
      * történjen a lapcsere.
      */
-    private PageReplaceStrategy pageReplacer = PageReplaceNFU.getInstance();
+    private PageReplaceStrategy pageReplacer = PageReplaceNRU.getInstance();
 
     /**
      * Konstruktor, amely a lapokat létrehozza és inicializájla.
