@@ -7,6 +7,6 @@ package memsim_java;
 public class PageFaultException extends Exception {
     public PageFaultException(String msg) {
         super(msg);
-        Main.stats.addPageFault(); //inkrementáljuk a pagefault-okat
+        Statistics.getInstance().addPageFault(); //inkrementáljuk a pagefault-okat
     }
 }

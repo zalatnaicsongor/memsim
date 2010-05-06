@@ -113,7 +113,8 @@ public class Memory {
                     // amelyik lapot kidobjuk
                     Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
                     // kidobjuk
-                    virtMem.throwOutPage(out);
+                    // HA DIRTY, AKKOR VISSZA KÉNE ÍRNI A LEMEZRE
+                    // ENNEK IDEJE: AHÁNY BYTE VAN A LAPBAN * ELÉRÉS
                     if (out.getDirty()) {
                         Statistics.getInstance().useVirtualWrite();
                     }
@@ -123,8 +124,13 @@ public class Memory {
                 virtMem.getPageReplacer().doTheAccountingOnPageReplace(pageFrames);
                 // Ha már van hely, akkor jöhet az új lap, a pageNumber-adik
                 virtMem.loadPageIntoMemory(pageNumber);
+<<<<<<< HEAD:src/memsim_java/Memory.java
+
+                Main.stats.useVirtual();             
+=======
                 
                 Statistics.getInstance().useVirtualRead();
+>>>>>>> ed174aa78b90ecd0d5fd4a00718caa5db3d375a6:src/memsim_java/Memory.java
             }
         } while (back);
         
@@ -132,7 +138,7 @@ public class Memory {
 
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most OLVASTUK
         virtMem.getPageReplacer().doTheAccountingOnRead(hereItIs, pageFrames);
-        return hereItIs.readByte(physicalAddress);
+		return hereItIs.readByte(physicalAddress);
 	
     }
 
@@ -141,7 +147,7 @@ public class Memory {
 
         int pageNumber = address / PAGESIZE;            // melyik lapon van a cím
         int physicalAddress = address % PAGESIZE;       // a lapon hol
-        Page hereItIs = null;
+		Page hereItIs = null;
         do {
             try {
                 //ha bennvan, akkor béke, ha nem, akkor hibát dob
@@ -151,6 +157,8 @@ public class Memory {
                 if (pageFrames.size() == NUMBEROFPAGEFRAMES) {
                     // amelyik lapot kidobjuk
                     Page out = virtMem.getPageReplacer().whichToThrowOut(pageFrames);
+                    // HA DIRTY, AKKOR VISSZA KÉNE ÍRNI A LEMEZRE
+                    // ENNEK IDEJE: AHÁNY BYTE VAN A LAPBAN * ELÉRÉS
                     if (out.getDirty()) {
                         Statistics.getInstance().useVirtualWrite();
                     }
@@ -169,7 +177,7 @@ public class Memory {
 
         //az alg.-nak megfelelő módon lekönyveljük, hogy ezt most ÍRTUK
         virtMem.getPageReplacer().doTheAccountingOnWrite(hereItIs, pageFrames);
-        hereItIs.writeByte(physicalAddress, data);
+		hereItIs.writeByte(physicalAddress, data);
     }
 
     public Pointer allocPointer(int wordCount) throws MemorySpaceException {

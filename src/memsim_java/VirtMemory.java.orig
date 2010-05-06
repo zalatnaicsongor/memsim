@@ -29,7 +29,11 @@ public class VirtMemory {
      * A lepcserélő, ami megmondja, hogy melyik algoritmus alapján
      * történjen a lapcsere.
      */
+<<<<<<< HEAD:src/memsim_java/VirtMemory.java
+    private PageReplaceStrategy pageReplacer = PageReplaceNRU.getInstance();
+=======
     private PageReplaceStrategy pageReplacer;
+>>>>>>> ed174aa78b90ecd0d5fd4a00718caa5db3d375a6:src/memsim_java/VirtMemory.java
 
     /**
      * Konstruktor, amely a lapokat létrehozza és inicializájla.

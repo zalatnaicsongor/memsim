@@ -82,13 +82,13 @@ public class Cache {
     }
 
     public int genLine(int address) {
-        int remainLength = Memory.ADDRESSLENGTH - this.tagLength - this.lineLength;
+        int remainLength = Memory.getInstance().ADDRESSLENGTH - this.tagLength - this.lineLength;
         int mask = (int)(Math.pow(2, this.lineLength) - 1) << remainLength;
         return ((mask & address) >>> remainLength);
     }
 
     public int genTag(int address) {
-        int remainLength = Memory.ADDRESSLENGTH - this.tagLength;
+        int remainLength = Memory.getInstance().ADDRESSLENGTH - this.tagLength;
         int mask = (int)(Math.pow(2, this.tagLength) - 1) << remainLength;
         return ((mask & address) >>> remainLength);
     }
@@ -117,14 +117,13 @@ public class Cache {
             row = Cache.getInstance().getLine(line).getRowByTag(tag);
         } catch (CacheRowNotFoundException e) {
             System.out.println(e);
-            Main.stats.addCacheFault(); //inkrementáljuk a cachefault változót
+            Statistics.getInstance().addCacheFault(); //inkrementáljuk a cachefault változót
             row = Cache.getInstance().getLine(line).createRow(tag);
         }
-        Main.stats.useCache();
+        Statistics.getInstance().useCache();
         return row.readByte(displacement);
     }
     public void writeByte(int address, int data) {
-        Main.stats.useCache();
         this.getWriteStrategy().writeByte(address, data);
     }
 
@@ -155,7 +154,7 @@ public class Cache {
         this.associativity = associativity;
         this.lineLength = Cache.logKetto(numRows);
         this.displacementLength = Cache.logKetto(rowSize);
-        this.tagLength = Memory.ADDRESSLENGTH - this.lineLength - this.displacementLength;
+        this.tagLength = Memory.getInstance().ADDRESSLENGTH - this.lineLength - this.displacementLength;
         if (this.tagLength <= 0) {
             throw new Exception("itt valami rossz történt");
         }
