@@ -1,0 +1,146 @@
+#allokálás
+alloc po 60000
+alloc p1 1000
+alloc p2 4000
+alloc p3 25000
+
+read po 34000
+write p1 363 1
+write p2 2501 2
+write p3 17090 3 
+
+read p1 200
+read p1 201
+read p1 202
+read p1 203
+read p1 204
+read p1 205
+read p1 206
+read p1 207
+read p1 208
+read p1 209
+read p1 210
+read p1 211
+read p1 212
+read p1 213
+read p1 214
+read p1 215
+read p1 216
+read p1 217
+read p1 218
+read p1 219
+read p1 200
+read p1 201
+read p1 202
+read p1 203
+read p1 204
+read p1 205
+read p1 206
+read p1 207
+read p1 208
+read p1 209
+read p1 210
+read p1 211
+read p1 212
+read p1 213
+read p1 214
+read p1 215
+read p1 216
+read p1 217
+read p1 218
+read p1 219
+read p1 200
+read p1 201
+read p1 202
+read p1 203
+read p1 204
+read p1 205
+read p1 206
+read p1 207
+read p1 208
+read p1 209
+read p1 210
+read p1 211
+read p1 212
+read p1 213
+read p1 214
+read p1 215
+read p1 216
+read p1 217
+read p1 218
+read p1 219
+
+write p2 601 57
+write p3 4500 57
+
+read p2 2007
+read p2 2009
+read p2 2011
+read p2 2013
+read p2 2015
+read p2 2007
+read p2 2009
+read p2 2011
+read p2 2013
+read p2 2015
+read p2 2007
+read p2 2009
+read p2 2011
+read p2 2013
+read p2 2015
+read p2 2007
+read p2 2009
+read p2 2011
+read p2 2013
+read p2 2015
+read p2 2007
+read p2 2009
+read p2 2011
+read p2 2013
+read p2 2015
+
+read p2 3945
+read p2 3946
+read p2 3947
+read p2 3945
+read p2 3946
+read p2 3947
+read p2 3945
+read p2 3946
+read p2 3947
+read p2 3945
+read p2 3946
+read p2 3947
+
+write po 54987 34
+write po 45234 34
+
+read p3 12900
+write po 43800
+read p3 12901
+write po 43801
+read p3 12902
+write po 43802
+read p3 12903
+write po 43803
+read p3 12904
+write po 43804
+read p3 12905
+write po 43805
+read p3 12906
+write po 43806
+read p3 12907
+write po 43807
+read p3 12908
+write po 43808
+read p3 12909
+write po 43809
+read p3 12910
+write po 43810
+read p3 12911
+write po 43811
+
+free po
+free p1
+free p2
+free p3

@@ -1,11 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package memsim_java;
 /**
- *
+ * Egy gyorsítósort reprezentáló osztály
  * @author zalatnaicsongor
  */
 public class CacheLine {
@@ -14,10 +9,17 @@ public class CacheLine {
     private int line;
     public CacheRow[] cacheRowArray;
 
+    /**
+     * getter
+     * @return line
+     */
     public int getLine() {
         return line;
     }
 
+    /**
+     * minden row-t kidob a line-ban
+     */
     public void destroyAll() {
         for (CacheRow cr: cacheRowArray) {
             cr.discard();
@@ -28,18 +30,31 @@ public class CacheLine {
         this.sequence = 0;
     }
 
+    /**
+     * alaphelyzetbe állítja a row-k használatát
+     */
     public void resetUsageData() {
         for (CacheRow cr: cacheRowArray) {
             cr.resetUsageData();
         }
     }
 
+    /**
+     * lekéri a következő számot a szekvenciából
+     * @return
+     */
     public int getNextSequence() {
         int retval = this.sequence;
         this.sequence++;
         return retval;
     }
 
+    /**
+     * konstruktor
+     * beállítja a line-t és a benne lévő row-kat
+     * @param line
+     * @param associativity
+     */
     public CacheLine(int line, int associativity) {
         this.line = line;
         this.cacheRowArray = new CacheRow[associativity];
@@ -48,6 +63,12 @@ public class CacheLine {
         //}
     }
 
+    /**
+     * Visszaad egy row-t tag alapján
+     * @param tag
+     * @return row
+     * @throws CacheRowNotFoundException
+     */
     public CacheRow getRowByTag(int tag) throws CacheRowNotFoundException {
         CacheRow retval = null;
         for (CacheRow cr: this.cacheRowArray) {
@@ -66,6 +87,12 @@ public class CacheLine {
         return retval;
     }
 
+    /**
+     * egy új row hozzáadása ehhez a line-hoz
+     * ha már nincs hely, akkor kidobjuk valamelyiket
+     * @param tag
+     * @return a row
+     */
     public CacheRow createRow(int tag) {
         CacheRow retval = null;
         while (this.getFreeRowsCount() <= 0) {
@@ -78,6 +105,11 @@ public class CacheLine {
         return retval;
     }
 
+    /**
+     * keres egy szabad rowt ebben a line-ban
+     * és visszaadja az indexét
+     * @return index
+     */
     public int findFreeIndex() {
         int index = -1;
         int i = 0;
@@ -91,6 +123,10 @@ public class CacheLine {
         return index;
     }
 
+    /**
+     * megszámolja, hány üres hely van ebben a line-ban
+     * @return count
+     */
     public int getFreeRowsCount() {
         int retval = 0;
         for (CacheRow cr: this.cacheRowArray) {
@@ -101,6 +137,10 @@ public class CacheLine {
         return retval;
     }
 
+    /**
+     * megkeresi a legkevesebbszer használt row-t
+     * @return row
+     */
     public CacheRow getMinUsageCountCacheRow() {
         CacheRow retval = this.cacheRowArray[0];
         for (CacheRow cr: this.cacheRowArray) {
@@ -111,6 +151,10 @@ public class CacheLine {
         return retval;
     }
 
+    /**
+     * megkeresi a legtöbbször használt row-t
+     * @return row
+     */
     public CacheRow getMaxUsageCountCacheRow() {
         CacheRow retval = this.cacheRowArray[0];
         for (CacheRow cr: this.cacheRowArray) {
@@ -121,6 +165,10 @@ public class CacheLine {
         return retval;
     }
 
+    /**
+     * megkeresi a legrégebben használt row-t
+     * @return row
+     */
     public CacheRow getMinUsageSequenceCacheRow() {
         CacheRow retval = this.cacheRowArray[0];
         for (CacheRow cr: this.cacheRowArray) {
@@ -131,6 +179,10 @@ public class CacheLine {
         return retval;
     }
 
+    /**
+     * megkeresi a legutóbb használt rowt
+     * @return row
+     */
     public CacheRow getMaxUsageSequenceCacheRow() {
         CacheRow retval = this.cacheRowArray[0];
         for (CacheRow cr: this.cacheRowArray) {

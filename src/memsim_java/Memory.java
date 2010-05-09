@@ -82,6 +82,9 @@ public class Memory {
         return ret;
 	}
 
+    /**
+     * kompaktálja a memóriát
+     */
     public void compact() {
         int kezdocim = 0;
 
@@ -97,6 +100,11 @@ public class Memory {
         this.updateContFreeSpace();
     }
 
+    /**
+     * egy byte-ot olvas address-ről
+     * @param address
+     * @return byte
+     */
     public int readByte(int address) {
         boolean back = true;
         
@@ -137,6 +145,11 @@ public class Memory {
 	
     }
 
+    /**
+     * egy byte írása address címre
+     * @param address
+     * @param data
+     */
     public void writeByte(int address, int data) {
         boolean back = true;
         boolean isThereReplace = false;                 // kellett-e lapcsere
@@ -180,6 +193,12 @@ public class Memory {
 		hereItIs.writeByte(physicalAddress, data);
     }
 
+    /**
+     * egy poiter allokálása
+     * @param wordCount - mennyit
+     * @return - a pointer
+     * @throws MemorySpaceException
+     */
     public Pointer allocPointer(int wordCount) throws MemorySpaceException {
         if (wordCount < 1) {
             throw new MemorySpaceException("1-nél kisebb pointert nem allokálunk!");
@@ -222,6 +241,9 @@ public class Memory {
         return retval;
     }
 
+    /**
+     * frissíti, hogy mennyi összefüggő szabad hely van a memóriában
+     */
     public void updateContFreeSpace() {
         ArrayList<Integer> temp = new ArrayList<Integer>();
         int kezdoCim = 0;
@@ -236,6 +258,13 @@ public class Memory {
         System.out.println("Legnagyobb szabad lyuk: " + this.getMaxContFreeSpace() + " byte");
     }
 
+    /**
+     * a memória beállítása konstruktorban
+     * @param addresslength - címméret
+     * @param physaddresslength - fizikai címméret
+     * @param pagesize - lapméret
+     * @param prs - a lapcserélő str. is ide kell, mert ő hozza lérte a virtuális memóriát is
+     */
     protected Memory(int addresslength, int physaddresslength, int pagesize, PageReplaceStrategy prs) {
 
         this.ADDRESSLENGTH = addresslength;
@@ -264,7 +293,12 @@ public class Memory {
         this.freeSpace = SIZE;
     }
 
-    
+    /**
+     * visszaad egy pointert cím alapján
+     * (vagy ha nincs ilyen, akkor null)
+     * @param address
+     * @return pointer
+     */
     public Pointer getPointer(int address) {
         for (Pointer ptr : this.pointers) {
             if (ptr.getAddress() == address) {
@@ -274,30 +308,61 @@ public class Memory {
         return null;
     }
 
+    /**
+     * max. egybefüggő hely setter
+     * @param maxContFreeSpace
+     */
     public void setMaxContFreeSpace(int maxContFreeSpace) {
         this.maxContFreeSpace = maxContFreeSpace;
     }
 
+    /**
+     * max egybefüggő hely getter
+     * @return max
+     */
     public int getMaxContFreeSpace() {
         return this.maxContFreeSpace;
     }
 
+    /**
+     * összes szabad hely setter
+     * @param freeSpace
+     */
     public void setFreeSpace(int freeSpace) {
         this.freeSpace = freeSpace;
     }
 
+    /**
+     * összes szabad hely getter
+     * @return freeSpace
+     */
     public int getFreeSpace() {
         return this.freeSpace;
     }
 
+    /**
+     * a fizikai memóriában lévő lapok
+     * @return list
+     */
     public LinkedList<Page> getPageFrames() {
         return pageFrames;
     }
 
+    /**
+     * memória elkészítése
+     * @param addresslength
+     * @param physaddresslength
+     * @param pagesize
+     * @param prs
+     */
     public static void createMemory(int addresslength, int physaddresslength, int pagesize, PageReplaceStrategy prs) {
         Memory.instance = new Memory(addresslength, physaddresslength, pagesize, prs);
     }
 
+    /**
+     * a memória példány lekérése
+     * @return instance
+     */
     public static Memory getInstance() {
         return Memory.instance;
     }

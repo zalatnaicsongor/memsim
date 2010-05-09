@@ -6,7 +6,7 @@
 package cache.algorithm;
 import memsim_java.*;
 /**
- *
+ * line megtelésekor a legkevesebbet használt row-t dobja ki
  * @author zalatnaicsongor
  */
 public class CacheRowDiscardLFU implements CacheRowDiscardStrategy {

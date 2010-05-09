@@ -1,12 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cache.algorithm;
 import memsim_java.*;
 /**
- *
+ * line megtelésekor a legrégebben használt row-t dobja ki
  * @author zalatnaicsongor
  */
 public class CacheRowDiscardLRU implements CacheRowDiscardStrategy {

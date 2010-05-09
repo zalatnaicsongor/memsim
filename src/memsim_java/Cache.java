@@ -1,14 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-//TODO: ARRAYLIST KIIRTASA (csak pointernel maradhat) +KOMPAKTÁLÁSKOR CACHE INVALIDÁLÁSA + ALGORITMUSOK
-
 package memsim_java;
 import cache.algorithm.*;
 /**
- *
+ * A cache-t reprezentáló osztály
+ * Állítható paraméterek:
+ * - sorméret
+ * - sorok száma
+ * - asszociativitás mértéke
+ * - soreldobó és visszaíró stratégia
  * @author zalatnaicsongor
  */
 public class Cache {
@@ -26,13 +24,19 @@ public class Cache {
 
     private CacheLine[] lines;
 
-
+    /**
+     * Minden gyorsítósor kidobása
+     */
     public void destroyAll() {
         for (CacheLine cr: lines) {
             cr.destroyAll();
         }
     }
 
+    /**
+     * Gyorsítósor kidobása cím alapján
+     * @param address
+     */
     public void destroyByAddress(int address) {
         int line = this.genLine(address);
         int tag = this.genTag(address);
@@ -45,59 +49,118 @@ public class Cache {
         }
     }
 
+    /**
+     * Visszaadja a "line" sorszámú line-t
+     * @param line
+     * @return CacheLine
+     */
     public CacheLine getLine(int line) {
         return lines[line];
     }
 
+    /**
+     * Visszaadja a jelenleg használt kidobó-stratégiát
+     * @return CacheRowDiscardStrategy
+     */
     public CacheRowDiscardStrategy getRowDiscardStrategy() {
         return rowDiscardStrategy;
     }
 
+    /**
+     * Beállítja a sorkidobó stratégiát
+     * @param rowDiscardStrategy
+     */
     public void setRowDiscardStrategy(CacheRowDiscardStrategy rowDiscardStrategy) {
         this.rowDiscardStrategy = rowDiscardStrategy;
     }
 
+    /**
+     * Visszaadja a jelenleg használt író-stratégiát
+     * @return CacheRowDiscardStrategy
+     */
     public CacheWriteStrategy getWriteStrategy() {
         return writeStrategy;
     }
 
+    /**
+     * Beállítja az íróstratégiát
+     * @param rowDiscardStrategy
+     */
     public void setWriteStrategy(CacheWriteStrategy writeStrategy) {
         this.writeStrategy = writeStrategy;
     }
 
+    /**
+     * Lekérdezi az asszociatibitást
+     * @return int
+     */
     public int getAssociativity() {
         return associativity;
     }
 
+    /**
+     * Lekérdezi a sorok számát
+     * @return int
+     */
     public int getNumRows() {
         return numRows;
     }
 
+    /**
+     * Lekérdezi a sorméretet
+     * @return int
+     */
     public int getRowSize() {
         return rowSize;
     }
 
+    /**
+     * Lekérdezi a teljes cache-méretet
+     * @return int
+     */
     public int getSize() {
         return numRows * rowSize * associativity;
     }
 
+    /**
+     * Line generálása cím alapján
+     * @param address
+     * @return line
+     */
     public int genLine(int address) {
         int remainLength = Memory.getInstance().ADDRESSLENGTH - this.tagLength - this.lineLength;
         int mask = (int)(Math.pow(2, this.lineLength) - 1) << remainLength;
         return ((mask & address) >>> remainLength);
     }
 
+    /**
+     * Tag generálása cím alapján
+     * @param address
+     * @return tag
+     */
     public int genTag(int address) {
         int remainLength = Memory.getInstance().ADDRESSLENGTH - this.tagLength;
         int mask = (int)(Math.pow(2, this.tagLength) - 1) << remainLength;
         return ((mask & address) >>> remainLength);
     }
 
+    /**
+     * Eltolás generálása cím alapján
+     * @param address
+     * @return displacement
+     */
     public int genDisplacement(int address) {
         int mask = (int)(Math.pow(2, this.displacementLength) - 1);
         return (mask & address);
     }
 
+    /**
+     * Cím visszagenerálása tag-ből, line-ból és eltolásból
+     * @param tag
+     * @param line
+     * @param displacement
+     * @return address
+     */
     public int genAddress(int tag, int line, int displacement) {
         int retval = 0;
         retval = retval | displacement;
@@ -106,6 +169,11 @@ public class Cache {
         return retval;
     }
 
+    /**
+     * Egy byte olvasása cache-ből
+     * @param address
+     * @return byte
+     */
     public int readByte(int address) {
         int line = Cache.getInstance().genLine(address);
         int tag = Cache.getInstance().genTag(address);
@@ -123,10 +191,21 @@ public class Cache {
         Statistics.getInstance().useCache();
         return row.readByte(displacement);
     }
+
+    /**
+     * Egy byte írása cache-be
+     * @param address - hova
+     * @param data - mit
+     */
     public void writeByte(int address, int data) {
         this.getWriteStrategy().writeByte(address, data);
     }
 
+    /**
+     * Ellenőrzéshez, hogy tényleg 2 hatványa-e az, aminek kell
+     * @param a - a szám
+     * @return log2(a)
+     */
     public static int logKetto(int a) {
         int r = 0;
         while (true) {
@@ -139,6 +218,13 @@ public class Cache {
         return r;
     }
 
+    /**
+     * Protected konstruktor, paraméterek a változtatható értékek
+     * @param rowSize
+     * @param numRows
+     * @param associativity
+     * @throws Exception
+     */
     protected Cache(int rowSize, int numRows, int associativity) throws Exception {
         if ((rowSize & (rowSize - 1)) != 0 || rowSize <= 0) {
             throw new Exception("rowSize nem kettohatvany, vagy 0, vagy negativ");
@@ -164,6 +250,13 @@ public class Cache {
         }
     }
 
+    /**
+     * Cache elkészítése
+     * @param rowSize
+     * @param numRows
+     * @param associativity
+     * @throws Exception
+     */
     public static void create(int rowSize, int numRows, int associativity) throws Exception {
         try {
             Cache.instance = new Cache(rowSize, numRows, associativity);
@@ -171,6 +264,11 @@ public class Cache {
             throw new Exception(e);
         }
     }
+
+    /**
+     * Cache-példány lekérése
+     * @return instance
+     */
     public static Cache getInstance() {
         return Cache.instance;
     }

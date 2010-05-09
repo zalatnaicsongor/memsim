@@ -30,6 +30,10 @@ public class Statistics {
 
     private static Statistics instance = null;
 
+    /**
+     * A Statistics-példány lekérése
+     * @return instance
+     */
     public static Statistics getInstance() {
         if (instance == null) {
             instance = new Statistics();
@@ -37,20 +41,33 @@ public class Statistics {
         return instance;
     }
 
+    /**
+     * üres konstruktor, a singleton miatt private
+     */
     private Statistics() {
 
     }
 
+    /**
+     * Egy cache-fault hozzáadása
+     */
     public void addCacheFault() {
         this.cacheFault++;
         System.out.println("CacheFAULT");
     }
 
+    /**
+     * Egy cache-használat hozzáadása
+     */
     public void useCache() {
         this.cacheUsed++;
         System.out.println("CacheUSE");
     }
 
+    /**
+     * Egy memóriahasználat elkönyvelése
+     * @param type
+     */
     public void useMemory(String type) {
         if (type.equals("read")) {
             System.out.println("MemoryREAD");
@@ -61,16 +78,25 @@ public class Statistics {
         }
     }
 
+    /**
+     * Laphiány eltárolása
+     */
     public void addPageFault() {
         this.pageFault++;
         System.out.println("PageFAULT");
     }
 
+    /**
+     * Kompaktálás eltárolása
+     */
     public void addCompact() {
         this.numberOfCompacts++;
         System.out.println("MemoryCOMPACTED");
     }
 
+    /**
+     * Olvasás virtuális memóriából
+     */
     public void useVirtualRead() {
         //lap ki-be == lap mérete * elérés ideje (elérési idő byteonként van számolva!!!)
         this.virtualUsedRead += Memory.getInstance().PAGESIZE;
@@ -78,6 +104,10 @@ public class Statistics {
         this.memoryUsedWrite += Memory.getInstance().PAGESIZE;
         System.out.println("VirtualREAD");
     }
+
+    /**
+     * Írás virtuális memóriába
+     */
     public void useVirtualWrite() {
         //lap ki-be == lap mérete * elérés ideje (elérési idő byteonként van számolva!!!)
         this.virtualUsedWrite += Memory.getInstance().PAGESIZE;
@@ -86,6 +116,10 @@ public class Statistics {
         System.out.println("VirtualWRITE");
     }
 
+    /**
+     * Az összegzett adatok exportálása csv formában
+     * @param fileName
+     */
     public void exportCSV(String fileName) {
         int a = (Statistics.memoryReadTime * this.memoryUsedRead + Statistics.memoryWriteTime * this.memoryUsedWrite);
         int b = (this.virtualUsedRead + this.virtualUsedWrite) * Statistics.virtualTime;

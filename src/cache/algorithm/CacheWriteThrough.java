@@ -1,13 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cache.algorithm;
 import memsim_java.*;
 
 /**
- *
+ * írás áteresztő stratégia
  * @author zalatnaicsongor
  */
 public class CacheWriteThrough implements CacheWriteStrategy {

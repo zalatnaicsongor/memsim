@@ -1,13 +1,8 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package cache.algorithm;
 import memsim_java.*;
 
 /**
- *
+ * írásallokáló stratégia memóriába íráskor
  * @author zalatnaicsongor
  */
 public class CacheWriteAllocator implements CacheWriteStrategy {

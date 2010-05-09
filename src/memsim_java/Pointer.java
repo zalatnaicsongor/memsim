@@ -1,11 +1,19 @@
 package memsim_java;
 
+/**
+ * a memória egy allokált részére mutató pointert megvalósító osztály
+ */
 public class Pointer implements Comparable {
 
     private int size; // SZAVAK SZÁMA
     private int address; // KEZDŐCÍM
     private Memory memObj;
 
+    /**
+     * a Comparable interfész implementálása
+     * @param o
+     * @return int
+     */
     public int compareTo(Object o) {
         Pointer p1 = (Pointer) o;
         int retval = 0;
@@ -17,6 +25,12 @@ public class Pointer implements Comparable {
         return retval;
     }
 
+    /**
+     * egy szót olvas offset-től
+     * @param offset
+     * @return int
+     * @throws PointerOutOfRangeException
+     */
     public int read(int offset) throws PointerOutOfRangeException {
         if (offset + 1 > size) {
             throw new PointerOutOfRangeException("Nincs ennyi memória foglalva");
@@ -26,6 +40,12 @@ public class Pointer implements Comparable {
         return (msb << 8) | lsb;
     }
 
+    /**
+     * egy szót ír offset-hez
+     * @param offset - hova
+     * @param data - mit
+     * @throws PointerOutOfRangeException
+     */
     public void write(int offset, int data) throws PointerOutOfRangeException {
         if (offset + 1 > size) {
             throw new PointerOutOfRangeException("Nincs ennyi memória foglalva");
@@ -36,14 +56,31 @@ public class Pointer implements Comparable {
         writeByte((offset * 2) + 1, lsb);
     }
 
+    /**
+     * byte írása offsethez
+     * (erre bontja a read is)
+     * @param offset
+     * @return int
+     */
     private int readByte(int offset) {
         return Cache.getInstance().readByte(this.address + offset);
     }
 
+    /**
+     * byte írása offset-hez
+     * (erre bontja write is)
+     * @param offset - hova
+     * @param data - mit
+     */
     private void writeByte(int offset, int data) {
         Cache.getInstance().writeByte(address + offset, data);
     }
 
+    /**
+     * konstruktor
+     * @param size - mekkora helyre mutasson a pointer
+     * @param startAddress - honnan kezdődjön
+     */
     public Pointer(int size, int startAddress) {
         this.size = size;
         this.address = startAddress;
@@ -55,6 +92,10 @@ public class Pointer implements Comparable {
         System.out.println("Végcím: " + (address + this.getSizeInBytes() - 1));
     }
 
+    /**
+     * pointer felszabadítása
+     * @return
+     */
     public Pointer free() {
         this.clearCache();
         this.memObj.pointers.remove(this);
@@ -68,12 +109,19 @@ public class Pointer implements Comparable {
         return null;
     }
 
+    /**
+     * cache kiürítése
+     */
     private void clearCache() {
         for (int i = 0; i < this.getSizeInBytes(); i++) {
             Cache.getInstance().destroyByAddress(this.getAddress() + i);
         }
     }
 
+    /**
+     * pointer mozgatása címre
+     * @param toAbsoluteAddress - ide
+     */
     public void move(int toAbsoluteAddress) {
         this.clearCache();
         for (int i = 0; i < this.getSizeInBytes(); i++) {
@@ -82,18 +130,34 @@ public class Pointer implements Comparable {
         this.setAddress(toAbsoluteAddress);
     }
 
+    /**
+     * pointer mérete
+     * @return size
+     */
     public int getSize() {
         return this.size;
     }
 
+    /**
+     * pointer mérete byte-okban
+     * @return size
+     */
     public int getSizeInBytes() {
         return (this.size * 2);
     }
 
+    /**
+     * cím beállítása
+     * @param address
+     */
     public void setAddress(int address) {
         this.address = address;
     }
 
+    /**
+     * cím lekérése
+     * @return address
+     */
     public int getAddress() {
         return this.address;
     }

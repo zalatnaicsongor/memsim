@@ -1,0 +1,7 @@
+18 14 4096 FIFO 32 32 1 LRU Allocator
+18 14 4096 LRU 32 32 1 LRU Allocator
+18 14 4096 NFU 32 32 1 LRU Allocator
+18 14 4096 Random 32 32 1 LRU Allocator
+18 14 4096 SecondChance 32 32 1 LRU Allocator
+18 14 4096 NRU 32 32 1 LRU Allocator
+18 14 4096 Aging 32 32 1 LRU Allocator

@@ -3,24 +3,31 @@ import cache.algorithm.*;
 import java.util.*;
 import java.io.*;
 import virtmemory.algorithm.*;
+
 /**
- *
+ * A szimulátor futtatható főprogramja
  * @author zalatnaicsongor
  */
 public class Main {
 
 
     /**
-     * @param args the command line arguments
+     * @param args a parancssori argumentumok
+     * 0. virtuális címméret
+     * 1. fizikai címméret
+     * 2. lapméret
+     * 3. lapcserélő alg.
+     * 4. cache row méret
+     * 5. cache row szám
+     * 6. cache asszociativitás
+     * 7. row-kidobási stratégia
+     * 8. row-visszaírási stratégia
+     * Ezek létrehoznak egy konfigurációt, amin az
+     * instructions.txt-ben lévő parancsok végrehajtódnak
+     * a keletkező statisztikai adatok export.csv néven
+     * exportálódnak a keretprogramnak
      */
     public static void main(String[] args) {
-
-        //Szerkezet:
-        //args-ban kap egy file-t, amiber a műveletek előre le vannk generálva
-        //strategy-ket, hogy ebben a futásban mit használ
-        //mem, cache és virt mértetket
-        //ezek alapján lefut, és a végén a statisztikát adott formában file-ba írja
-        //ebből egy másik osztály/program/script grafikont csinálhat...
 
         if (args.length != 9) {
             System.out.println("Hibás paraméterlista!");
@@ -139,6 +146,7 @@ public class Main {
                     if (line.equals("") || line.matches("^\\s+$") || line.charAt(0) == '#') {
                         continue;
                     } else {
+                        System.out.println("Parancs: " + line);
                         String[] pieces = line.split("\\s+");
                         if (pieces[0].equalsIgnoreCase("alloc")) {
                             if (n.indexOf(pieces[1]) != -1) {
