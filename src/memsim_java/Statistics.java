@@ -125,7 +125,7 @@ public class Statistics {
         int b = (this.virtualUsedRead + this.virtualUsedWrite) * Statistics.virtualTime;
         double c = 0.0;
         if (this.cacheUsed != 0) {
-            c = 1 - (this.cacheFault / this.cacheUsed);
+            c = 1.0 - ((double)this.cacheFault / (double)this.cacheUsed);
         }
 
         String answer = "CacheUse,CacheTime,MemUseRead,MemUseWrite,MemTime," +

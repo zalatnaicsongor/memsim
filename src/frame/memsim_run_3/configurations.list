@@ -1,0 +1,6 @@
+16 14 2048 FIFO 32 32 1 LRU Allocator
+16 14 2048 LRU 32 32 1 LRU Allocator
+16 14 2048 Random 32 32 1 LRU Allocator
+16 14 2048 SecondChance 32 32 1 LRU Allocator
+16 14 2048 NRU 32 32 1 LRU Allocator
+16 14 2048 Aging 32 32 1 LRU Allocator
