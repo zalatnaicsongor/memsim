@@ -6,13 +6,20 @@ import memsim_java.*;
 /**
  * NFU lapcserélő algolritmus.
  *   Minden laphoz tartozik egy számláló.
- *   Minden lapcserénél megnézzük a memóriában lévő lapokat és minden lap
- *      R bitjét hozzáadjuk a számlálójához.
+ *   Minden óramegszakításnál minden lap R bitjét hozzáadjuk a számlálójához.
  *   A legkisebb számlálójú lapot dobjuk el.
+ *
+ * Óramegszakítás helyett miden 5. memóriahivatkozásnál adjuk a számlálóhoz az R bitet.
  *
  * @author Kádár István
  */
 public class PageReplaceNFU implements PageReplaceStrategy {
+
+    /** Megmutatja hány hivatkozásonként történjen az R bitek hozzáadása a számlálóhoz. */
+    private final int INTERVAL = 5;
+
+    /** A változó számolja hogy hányszor történt hivatkozás a lapra. */
+    private int refCount = 0;
 
     /** Egyedüli példány. */
     private static PageReplaceNFU instance = null;
@@ -37,41 +44,58 @@ public class PageReplaceNFU implements PageReplaceStrategy {
 
     /**
      * Adminisztratív tevékenységek lapról történő olvasáskor.
+     * A számláló növelése és az R bitek nullázása minden
+     * INTERVAL-adik memóriahivatkozás után történik.
      * @param used A kérdéses lap.
      * @param physMem A lapkeretek láncolt listája.
      */
     public void doTheAccountingOnRead(Page used, LinkedList<Page> physMem) {
         used.setRef(true);
+        ++refCount;
+        if (refCount == INTERVAL) {                          // minden 5. hivatkozás után
+            Page page;
+            for (int i = 0; i < physMem.size(); i++) {
+                page = physMem.get(i);
+                if (page.getRef()) {                        // R bit hozzáadása a számlálóhoz
+                   page.incCounter();
+                   page.setRef(false);                      // R bit törlése
+                }
+            }
+            refCount = 0;
+        }
     }
 
     /**
      * Adminisztratív tevékenységek lapra történő íráskor.
+     * A számláló növelése és az R bitek nullázása minden
+     * INTERVAL-adik memóriahivatkozás után történik.
+     *
      * @param used A kérdéses lap.
      * @param physMem A lapkeretek láncolt listája.
      */
     public void doTheAccountingOnWrite(Page used, LinkedList<Page> physMem) {
         used.setRef(true);
+        ++refCount;
+        if (refCount == 5) {                                // minden 5. hivatkozás után
+
+            Page page;
+            for (int i = 0; i < physMem.size(); i++) {
+                page = physMem.get(i);
+                if (page.getRef()) {                        // R bit hozzáadása a számlálóhoz
+                   page.incCounter();
+                   page.setRef(false);                      // R bit törlése
+                }
+            }
+            refCount = 0;
+        }
     }
 
     /**
      * Adminisztratív tevékenységek lapcserénél.
      * @param physMem A lapkeretek láncolt listája.
-     *
-     * Minden lap Ref bitjét hozzáadjuk a számlálójához, majd töröljük az R bitet.
-     * Tannenbaum könyvében úgy szerepel, hogy ez az esemény minden óra-
-     * megszakításnál következik be. Knapp G. - Adamis G. Operációs rend-
-     * szerek c. könyve szerint azonban lapcserekor történik a számláló modo-
-     * sítása. Az utóbbinál maradunk.
      */
     public void doTheAccountingOnPageReplace(LinkedList<Page> physMem) {
-        Page page;
-        for (int i = 0; i < physMem.size(); i++) {
-            page = physMem.get(i);
-            if (page.getRef()) {                        // R bit hozzáadása a számlálóhoz
-               page.incCounter();
-               page.setRef(false);                      // R bit törlése
-            }
-        }
+        
     }
 
 
